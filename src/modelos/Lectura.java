@@ -4,6 +4,7 @@ package modelos;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.event.MouseEvent;
 
 /**
  *
@@ -263,4 +264,9 @@ public class Lectura implements Componente{
         a|=ancho/2;
         return a;
     }
+
+    /*@Override
+    public void mouseClick(MouseEvent evento) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }*/
 }

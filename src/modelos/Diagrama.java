@@ -33,6 +33,22 @@ public class Diagrama {
         bufferParesAEnlazar= new Componente[20][2];
     }
     /**
+     * Devuelve el componente que esta seleccionado, si hay mas de uno o no 
+     * hay ninguno seleccionado, devuelve null.
+     * @return 
+     */
+    public Componente getComponenteSeleccionado(){
+        Componente seleccionado=null;
+        for (Componente componente : componentes) {
+            if(componente.isSelected()){
+                if(seleccionado==null){
+                    seleccionado=componente;
+                }else return null;
+            }
+        }
+        return seleccionado;
+    }
+    /**
      * Establece como seleccionados a todos los componentes que esten en el area
      * formada por el rectangulo cuya esquina superior derecha es p1 y la 
      * esquina inferior izquierda es p2.

@@ -62,6 +62,15 @@ public class OyenteMenu implements ActionListener {
         } else if (accion.equals("Si")){
             Si comp = new Si(x, y);
             diagrama.add(comp);
+        }else if (accion.equals("Hacermientras")){
+            Hacermientras comp = new Hacermientras(x, y);
+            diagrama.add(comp);
+        }else if (accion.equals("Mientras")){
+            Mientras comp = new Mientras(x, y);
+            diagrama.add(comp);
+        }    else if (accion.equals("Ciclo")){
+            Ciclo comp = new Ciclo(x, y);
+            diagrama.add(comp);
         } else if(accion.equals("Reacomoda")){
             diagrama.reacomodaTodos();
         } else if(accion.equals("Selecciona todos")){

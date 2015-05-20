@@ -31,6 +31,9 @@ public class VentanaDiagramas extends javax.swing.JFrame {
         lectura.addActionListener(o);
         si.addActionListener(o);
         fin.addActionListener(o);
+        hacermientras.addActionListener(o);
+        mientras.addActionListener(o);
+        ciclo.addActionListener(o);
         //editar
         reacomoda.addActionListener(o);
         seleccionaTodos.addActionListener(o);
@@ -50,6 +53,8 @@ public class VentanaDiagramas extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         archivo = new javax.swing.JMenu();
         salir = new javax.swing.JMenuItem();
@@ -58,6 +63,9 @@ public class VentanaDiagramas extends javax.swing.JFrame {
         codigo = new javax.swing.JMenuItem();
         lectura = new javax.swing.JMenuItem();
         si = new javax.swing.JMenuItem();
+        hacermientras = new javax.swing.JMenuItem();
+        mientras = new javax.swing.JMenuItem();
+        ciclo = new javax.swing.JMenuItem();
         fin = new javax.swing.JMenuItem();
         editar = new javax.swing.JMenu();
         reacomoda = new javax.swing.JMenuItem();
@@ -75,7 +83,16 @@ public class VentanaDiagramas extends javax.swing.JFrame {
 
         jMenuItem3.setText("jMenuItem3");
 
+        jLabel1.setText("jLabel1");
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jLabel2.setFont(new java.awt.Font("Century Gothic", 3, 24)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(0, 51, 255));
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        jLabel2.setText("CANMASA");
+        jLabel2.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+        getContentPane().add(jLabel2, java.awt.BorderLayout.PAGE_END);
 
         archivo.setText("Archivo");
 
@@ -90,6 +107,11 @@ public class VentanaDiagramas extends javax.swing.JFrame {
         insertar.add(inicio);
 
         codigo.setText("Codigo");
+        codigo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                codigoActionPerformed(evt);
+            }
+        });
         insertar.add(codigo);
 
         lectura.setText("Lectura");
@@ -97,6 +119,15 @@ public class VentanaDiagramas extends javax.swing.JFrame {
 
         si.setText("Si");
         insertar.add(si);
+
+        hacermientras.setText("Hacermientras");
+        insertar.add(hacermientras);
+
+        mientras.setText("Mientras");
+        insertar.add(mientras);
+
+        ciclo.setText("Ciclo");
+        insertar.add(ciclo);
 
         fin.setText("Fin");
         insertar.add(fin);
@@ -117,6 +148,10 @@ public class VentanaDiagramas extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void codigoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_codigoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_codigoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -155,11 +190,15 @@ public class VentanaDiagramas extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu archivo;
+    private javax.swing.JMenuItem ciclo;
     private javax.swing.JMenuItem codigo;
     private javax.swing.JMenu editar;
     private javax.swing.JMenuItem fin;
+    private javax.swing.JMenuItem hacermientras;
     private javax.swing.JMenuItem inicio;
     private javax.swing.JMenu insertar;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -168,6 +207,7 @@ public class VentanaDiagramas extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem lectura;
+    private javax.swing.JMenuItem mientras;
     private javax.swing.JMenuItem reacomoda;
     private javax.swing.JMenuItem salir;
     private javax.swing.JMenuItem seleccionaTodos;

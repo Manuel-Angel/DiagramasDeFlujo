@@ -8,21 +8,21 @@ package modelos;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
-
 /**
  *
- * @author Manuel Angel Muñoz S
+ * @author Angel
  */
-public class Si extends ComponenteContenedor{
+public class Hacermientras extends ComponenteContenedor{
     int romboX[];
     int romboY[];
-    public Si(int x, int y) {
+    public Hacermientras(int x, int y) {
         super(x, y);
-        arriba= new Conector(ancho/2, -30, 5, Color.BLACK);
-        abajo= new Conector(ancho/2, alto+60,5, Color.BLACK);//este va a ser variable
+        arriba= new Conector(ancho/2, -60, 5, Color.BLACK);
+        abajo= new Conector(ancho/2, alto-220,5, Color.BLACK);//la variable
         conectoresInternos= new Conector[2];
-        conectoresInternos[0]= new Conector(ancho/2, alto+30, 5, Color.BLACK);//El conector de si
-        conectoresInternos[1]= new Conector( ancho+30,alto/2, 5, Color.BLACK); //El conector de no, tambien sera variable
+        conectoresInternos[0]= new Conector(ancho/2, alto+30, 5, Color.BLACK);
+        conectoresInternos[1]= new Conector( ancho+30,alto/2, 5, Color.BLACK);
+        // en el caso de los conectores, solo cambie las coordenadas de ubicacion puesto que ya tienen, la ejecucion que haran 
         componentesInternos= new Componente[2];
         romboX= new int[4];
         romboY= new int[4];
@@ -46,13 +46,15 @@ public class Si extends ComponenteContenedor{
         g.setColor(Color.BLACK);
         
         if(codigoInterior!=null)
-            g.drawString(codigoInterior, romboX[3]+10, romboY[3]+5);
+            g.drawString(codigoInterior, romboX[3]+10, romboY[3]+10);
         //conector si
+        
         g.drawLine(romboX[2], romboY[2], x+conectoresInternos[0].x, y + conectoresInternos[0].y); //linea
-        conectoresInternos[0].dibujar(g, this); //conector si
-        g.drawString("Si", x+conectoresInternos[0].x+10, y+conectoresInternos[0].y);
+        conectoresInternos[0].dibujar(g, this); //conector no
+        g.drawString("No", x+conectoresInternos[0].x+10, y+conectoresInternos[0].y);
         Componente aux=null;
         int xIni=0, yIni=0;
+       // g.drawLine(xIni, yIni, x+abajo.x, y+arriba.y); //linea del primer componente de si al conector 
         if(componentesInternos[0]!=null){
             aux= componentesInternos[0].getComponenteFinal();
             xIni=aux.getX() + aux.getAbajo().x;
@@ -61,12 +63,12 @@ public class Si extends ComponenteContenedor{
             xIni=x+conectoresInternos[0].x;
             yIni=y+conectoresInternos[0].y;
         }
-        g.drawLine(xIni, yIni, x+abajo.x, y+abajo.y); //linea del ultimo componente de si al conector abajo
+        //g.drawLine(xIni, yIni, x+arriba.x, y+arriba.y); //linea del ultimo componente de si al conector abajo
         
         //conector no
-        g.drawLine(romboX[1], romboY[1], x+conectoresInternos[1].x, y+ conectoresInternos[1].y); //rombo a conector no
+        g.drawLine(romboX[1], romboY[1], x+conectoresInternos[1].x, y+ conectoresInternos[1].y); //rombo a conector
         conectoresInternos[1].dibujar(g, this); //conector si
-        g.drawString("No", x+ conectoresInternos[1].x+10, y+conectoresInternos[1].y);
+        g.drawString("Si", x+ conectoresInternos[1].x+10, y+conectoresInternos[1].y);
         if(componentesInternos[1]!=null){
             aux= componentesInternos[1].getComponenteFinal();
             xIni=aux.getX() + aux.getAbajo().x;
@@ -75,12 +77,12 @@ public class Si extends ComponenteContenedor{
             xIni=x+conectoresInternos[1].x;
             yIni=y+conectoresInternos[1].y;
         }
-        g.drawLine(xIni, yIni, xIni, y+abajo.y); //linea del ultimo componente de no al conector abajo, correcta
+        g.drawLine(xIni, yIni, xIni, y+arriba.y); //linea del ultimo componente de no al conector abajo, correcta
         //g.drawLine(x+abajo.x, y, x, y);
         
-        g.drawLine(x+abajo.x, y+abajo.y, xIni, y+abajo.y);
+        g.drawLine(x+arriba.x, y+arriba.y, xIni, y+arriba.y);
         
-        g.drawLine(x+arriba.x, y+arriba.y,romboX[0], romboY[0]);
+        g.drawLine(x+abajo.x, y+arriba.y,romboX[0], romboY[0]);
         arriba.dibujar(g, this);
         abajo.dibujar(g, this);
     }
@@ -88,29 +90,7 @@ public class Si extends ComponenteContenedor{
     @Override
     public String generarCodigo() {
         StringBuilder codigo= new StringBuilder();
-        codigo.append("if(").append(codigoInterior).append("){\n");
-        Componente aux= componentesInternos[0];
-        String linea;
-        while(aux!=null){
-            linea=aux.generarCodigo();
-            if(linea.length()>0){
-                codigo.append("\t").append(linea).append("\n");
-            }
-        }
-        aux= componentesInternos[1];
-        
-        StringBuilder sino=new StringBuilder();
-        while(aux!=null){
-            linea=aux.generarCodigo();
-            if(linea.length()>0){
-                sino.append("\t").append(linea);
-            }
-        }
-        if(sino.length()>0){
-            codigo.append("} else {\n");
-            codigo.append(sino);
-            codigo.append("}\n");
-        }else codigo.append("}\n");
+       
         
         return codigo.toString();
     }
@@ -125,19 +105,9 @@ public class Si extends ComponenteContenedor{
     @Override
     public int getAncho() {
         int anchoIzq=this.ancho/2; 
-        //int anchoDer=anchoIzq + 30 + 10 + 20;//30 del largo minimo de la linea, 10 de lo que movimos la palabra "si" o "no" y 20 de lo que mide la palabra 
-        int anchoDer=conectoresInternos[1].x  - anchoIzq + 10+20; //*-*
-        int si=anchoMaximoComp(componentesInternos[0]);
-        int no=anchoMaximoComp(componentesInternos[1]); //hay que sumarle la ventaja que tiene puesto que inicia desde el conector no, que esta mas a la derecha
-        int aux=0;
-        anchoIzq= Math.max(anchoIzq, si>>16);
-        //aux= si & (0x0000ffff); //lado derecho de los componentes de si
-        //aux+= (no & (0xffff0000))>>16; //lado izquierdo de los componentes de no
-        //aux+= no & (0x0000ffff); //el lado derecho de los componentes de no
-        aux+= (conectoresInternos[1].x -  anchoIzq) + (no & 0x0000ffff); //*-*
-        anchoDer= Math.max(anchoDer, aux);
+        int anchoDer=anchoIzq + 30 + 10 + 20;
+//Configuracion de linea y texto 30 del largo minimo de la linea, 10 de lo que movimos la palabra "si" o "no" y 20 de lo que mide la palabra 
         
-        //codigoInterior= anchoIzq + ","+anchoDer;//esto es solo para hacer pruebas
         return (anchoIzq<<16) | anchoDer;
     }
     /**
@@ -203,8 +173,8 @@ public class Si extends ComponenteContenedor{
         }
         return Math.max(altoT, aux);
     }
-
-    /*@Override
+    /*
+    @Override
     public void mouseClick(MouseEvent evento) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }*/

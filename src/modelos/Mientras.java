@@ -11,21 +11,22 @@ import java.awt.event.MouseEvent;
 
 /**
  *
- * @author Manuel Angel Muñoz S
+ * @author Angel
  */
-public class Si extends ComponenteContenedor{
+public class Mientras extends ComponenteContenedor{
     int romboX[];
     int romboY[];
-    public Si(int x, int y) {
+    public Mientras(int x, int y) {
         super(x, y);
         arriba= new Conector(ancho/2, -30, 5, Color.BLACK);
-        abajo= new Conector(ancho/2, alto+60,5, Color.BLACK);//este va a ser variable
-        conectoresInternos= new Conector[2];
+        abajo= new Conector(ancho/2, alto+60,5, Color.BLACK);//la variable
+        conectoresInternos= new Conector[3];
         conectoresInternos[0]= new Conector(ancho/2, alto+30, 5, Color.BLACK);//El conector de si
-        conectoresInternos[1]= new Conector( ancho+30,alto/2, 5, Color.BLACK); //El conector de no, tambien sera variable
-        componentesInternos= new Componente[2];
-        romboX= new int[4];
-        romboY= new int[4];
+        conectoresInternos[1]= new Conector( ancho+30,alto/2, 5, Color.BLACK); //El conector de no
+        //conectoresInternos[2]= new Conector( ancho-30,alto/2, 5, Color.BLACK); //El conector de no
+        componentesInternos= new Componente[3];
+        romboX= new int[5];
+        romboY= new int[5];
     }
 
     @Override
@@ -41,18 +42,23 @@ public class Si extends ComponenteContenedor{
         romboY[2]=y + alto;
         romboX[3]=x;
         romboY[3]=y + alto /2;
+        romboX[4]=x + ancho;
+        romboY[4]=y + alto/2;
         
         g.fillPolygon(romboX, romboY, 4);
         g.setColor(Color.BLACK);
         
         if(codigoInterior!=null)
-            g.drawString(codigoInterior, romboX[3]+10, romboY[3]+5);
+            g.drawString(codigoInterior, romboX[3]+15, romboY[3]+5);
+           
         //conector si
+        
         g.drawLine(romboX[2], romboY[2], x+conectoresInternos[0].x, y + conectoresInternos[0].y); //linea
-        conectoresInternos[0].dibujar(g, this); //conector si
+        conectoresInternos[0].dibujar(g, this); //conector no
         g.drawString("Si", x+conectoresInternos[0].x+10, y+conectoresInternos[0].y);
         Componente aux=null;
         int xIni=0, yIni=0;
+       // g.drawLine(xIni, yIni, x+abajo.x, y+arriba.y); //linea del primer componente de si al conector 
         if(componentesInternos[0]!=null){
             aux= componentesInternos[0].getComponenteFinal();
             xIni=aux.getX() + aux.getAbajo().x;
@@ -64,9 +70,9 @@ public class Si extends ComponenteContenedor{
         g.drawLine(xIni, yIni, x+abajo.x, y+abajo.y); //linea del ultimo componente de si al conector abajo
         
         //conector no
-        g.drawLine(romboX[1], romboY[1], x+conectoresInternos[1].x, y+ conectoresInternos[1].y); //rombo a conector no
-        conectoresInternos[1].dibujar(g, this); //conector si
-        g.drawString("No", x+ conectoresInternos[1].x+10, y+conectoresInternos[1].y);
+        g.drawLine(romboX[1], romboY[1], x+conectoresInternos[1].x, y+ conectoresInternos[1].y); //rombo a conector
+        //conectoresInternos[1].dibujar(g, this); //conector si
+        //g.drawString("Si", x+ conectoresInternos[1].x+5, y+conectoresInternos[1].y);
         if(componentesInternos[1]!=null){
             aux= componentesInternos[1].getComponenteFinal();
             xIni=aux.getX() + aux.getAbajo().x;
@@ -88,29 +94,7 @@ public class Si extends ComponenteContenedor{
     @Override
     public String generarCodigo() {
         StringBuilder codigo= new StringBuilder();
-        codigo.append("if(").append(codigoInterior).append("){\n");
-        Componente aux= componentesInternos[0];
-        String linea;
-        while(aux!=null){
-            linea=aux.generarCodigo();
-            if(linea.length()>0){
-                codigo.append("\t").append(linea).append("\n");
-            }
-        }
-        aux= componentesInternos[1];
-        
-        StringBuilder sino=new StringBuilder();
-        while(aux!=null){
-            linea=aux.generarCodigo();
-            if(linea.length()>0){
-                sino.append("\t").append(linea);
-            }
-        }
-        if(sino.length()>0){
-            codigo.append("} else {\n");
-            codigo.append(sino);
-            codigo.append("}\n");
-        }else codigo.append("}\n");
+       
         
         return codigo.toString();
     }
@@ -127,17 +111,7 @@ public class Si extends ComponenteContenedor{
         int anchoIzq=this.ancho/2; 
         //int anchoDer=anchoIzq + 30 + 10 + 20;//30 del largo minimo de la linea, 10 de lo que movimos la palabra "si" o "no" y 20 de lo que mide la palabra 
         int anchoDer=conectoresInternos[1].x  - anchoIzq + 10+20; //*-*
-        int si=anchoMaximoComp(componentesInternos[0]);
-        int no=anchoMaximoComp(componentesInternos[1]); //hay que sumarle la ventaja que tiene puesto que inicia desde el conector no, que esta mas a la derecha
-        int aux=0;
-        anchoIzq= Math.max(anchoIzq, si>>16);
-        //aux= si & (0x0000ffff); //lado derecho de los componentes de si
-        //aux+= (no & (0xffff0000))>>16; //lado izquierdo de los componentes de no
-        //aux+= no & (0x0000ffff); //el lado derecho de los componentes de no
-        aux+= (conectoresInternos[1].x -  anchoIzq) + (no & 0x0000ffff); //*-*
-        anchoDer= Math.max(anchoDer, aux);
-        
-        //codigoInterior= anchoIzq + ","+anchoDer;//esto es solo para hacer pruebas
+       
         return (anchoIzq<<16) | anchoDer;
     }
     /**

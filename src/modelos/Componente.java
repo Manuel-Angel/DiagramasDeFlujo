@@ -7,6 +7,7 @@ package modelos;
 
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.event.MouseEvent;
 
 /**
  *
@@ -92,6 +93,7 @@ public interface Componente {
     public void traslada(int dx, int dy);
     public Conector getArriba();
     public Conector getAbajo();
+    //public void mouseClick(MouseEvent evento);
     /**
      * Verifica si el componente que se le esta mandando esta intersectando el
      * conector de abajo de este componente, i.e. el otro componente solicita 

@@ -8,15 +8,19 @@ package modelos;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.event.MouseEvent;
+import vista.ejemplo;
 
 /**
  *
  * @author Manuel Angel Muñoz S
  */
+
 public class Codigo implements Componente {
 
     Conector abajo;
     Conector arriba;
+    int a=0;
     /**
      * Color normal del rectangulo.
      */
@@ -72,12 +76,20 @@ public class Codigo implements Componente {
         
         g.fillRect(x, y, ancho, alto);
         g.setColor(Color.BLACK);
-        g.drawString((codigoInterior==null)?"": codigoInterior, x, y);
+        g.drawString((codigoInterior==null)?"": codigoInterior, x, y+10);
         g.drawLine(x+arriba.x, y+arriba.y, x+ancho/2, y);
         g.drawLine(x+abajo.x, y+ abajo.y, x+ancho/2, y+alto);
         arriba.dibujar(g, this);
         abajo.dibujar(g, this);
     }
+    /*
+    @Override
+    public void mouseClick(MouseEvent evento){
+        if(evento.getClickCount()==1){
+            ejemplo a = new ejemplo();
+            a.setVisible(true);
+        }
+    }*/
 
     @Override
     public String generarCodigo() {
@@ -145,6 +157,7 @@ public class Codigo implements Componente {
     @Override
     public void setSelected(boolean s) {
         selected=s;
+        a++;
     }
 
     @Override
@@ -162,6 +175,8 @@ public class Codigo implements Componente {
         }
         return false;
     }
+    
+    
 
     @Override
     public void traslada(int dx, int dy) {
@@ -178,6 +193,8 @@ public class Codigo implements Componente {
     public void setCodigoInterior(String codigo) {
         codigoInterior=codigo;
     }
+    
+   
 
     @Override
     public Componente getComponentePrincipio(boolean modo) {

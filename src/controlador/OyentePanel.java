@@ -8,8 +8,10 @@ package controlador;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import modelos.Componente;
 import modelos.Diagrama;
 import vista.PanelDiagrama;
+import vista.ejemplo;
 
 /**
  *
@@ -37,6 +39,7 @@ public class OyentePanel extends MouseAdapter {
         panel=pane;
         panel.addMouseMotionListener(this);
         panel.addMouseListener(this);
+        panel.addMouseWheelListener(this);
     }
     
     @Override
@@ -63,6 +66,29 @@ public class OyentePanel extends MouseAdapter {
             uy=p1.y;
             System.out.println("Se van a arrastrar uno o varios componentes");
         }
+    }
+    @Override
+      public void mouseClicked(MouseEvent e){
+          super.mouseClicked(e);
+          p1=e.getPoint();
+          if(selecciono){
+              selecciono=diagrama.confirmaSeleccion(p1, p1);
+          }
+          p2=e.getPoint();
+          Object Codigo = null;
+          if(selecciono&&e.getClickCount()==2){
+              selecciono=diagrama.confirmaSeleccion(p1, p2);
+              Componente select=diagrama.getComponenteSeleccionado();
+              if(select==null){
+                  System.out.println("No hay componente seleccionado");
+                  return ;
+              }
+              
+              ejemplo a = new ejemplo();
+              a.setVisible(selecciono);
+              a.comp=select;
+//              select.setCodigoInterior(a.getCodigoEscrito());
+          }
     }
     
     @Override
