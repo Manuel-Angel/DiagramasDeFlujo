@@ -6,8 +6,11 @@
 package modelos;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
+import java.util.Scanner;
 
 /**
  *
@@ -45,8 +48,8 @@ public class Si extends ComponenteContenedor{
         g.fillPolygon(romboX, romboY, 4);
         g.setColor(Color.BLACK);
         
-        if(codigoInterior!=null)
-            g.drawString(codigoInterior, romboX[3]+10, romboY[3]+5);
+        //if(codigoInterior!=null)
+            //g.drawString(codigoInterior, romboX[3]+10, romboY[3]+5);
         //conector si
         g.drawLine(romboX[2], romboY[2], x+conectoresInternos[0].x, y + conectoresInternos[0].y); //linea
         conectoresInternos[0].dibujar(g, this); //conector si
@@ -83,6 +86,43 @@ public class Si extends ComponenteContenedor{
         g.drawLine(x+arriba.x, y+arriba.y,romboX[0], romboY[0]);
         arriba.dibujar(g, this);
         abajo.dibujar(g, this);
+        imprimirCodigo(g);
+    }
+    public void imprimirCodigo(Graphics g){
+        if(codigoInterior==null)return;
+        Font font = new Font("Courier new", Font.PLAIN, 12);
+        g.setFont(font);
+        FontMetrics metrics = g.getFontMetrics(font);
+        Scanner s= new Scanner(codigoInterior);
+        int linea=0;
+        int tab=20;
+        while(s.hasNext() && (linea*metrics.getHeight()+15<alto) &&linea<5){
+            String aux=s.nextLine();
+            int messageWidth = metrics.stringWidth(aux);
+            if(messageWidth>=(ancho-15-Math.abs(tab)*2)){
+                aux=recortarCadena(metrics, aux, Math.abs(tab));
+            } //romboX[3]+10, romboY[3]+5
+            g.drawString(aux, romboX[3]+10+Math.abs(tab), romboY[3]-22+linea*metrics.getHeight());
+            tab-=10;
+            linea++;
+        }
+    }
+    public String recortarCadena(FontMetrics fm, String codigo, int tab){
+        int i=10;
+        StringBuilder aux;
+        System.out.println("Recorta");
+        //if(fm.stringWidth(codigo)>ancho){ //esto no era necesario
+            aux=new StringBuilder(codigo.substring(0, 10));
+            while(fm.stringWidth(aux.toString())<(ancho-15-tab*2) && i<codigo.length()){
+                aux.append(codigo.charAt(i));
+                i++;
+            }
+            if(i<codigo.length()){
+                aux.append("...");
+            }
+            return aux.toString();
+        //}
+        //return codigo;
     }
 
     @Override

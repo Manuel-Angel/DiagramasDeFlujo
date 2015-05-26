@@ -9,7 +9,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
-import vista.ejemplo;
+import vista.FormularioCodigo;
 /**
  *
  * @author Angel

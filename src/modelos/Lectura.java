@@ -2,9 +2,12 @@
 package modelos;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.util.Scanner;
 
 /**
  *
@@ -109,6 +112,42 @@ public class Lectura implements Componente{
         g.fillPolygon(px, py, 4);
         arriba.dibujar(g, this);
         abajo.dibujar(g, this);
+        g.setColor(Color.WHITE);
+        imprimirCodigo(g);
+    }
+    public void imprimirCodigo(Graphics g){
+        if(codigoInterior==null)return;
+        Font font = new Font("Courier new", Font.PLAIN, 12);
+        g.setFont(font);
+        FontMetrics metrics = g.getFontMetrics(font);
+        Scanner s= new Scanner(codigoInterior);
+        int linea=0;
+        while(s.hasNext() && (linea*metrics.getHeight()+15<alto)){
+            String aux=s.nextLine();
+            int messageWidth = metrics.stringWidth(aux);
+            if(messageWidth>ancho){
+                aux=recortarCadena(metrics, aux);
+            }
+            g.drawString(aux, x+inclinacion-linea*3, y+15+linea*metrics.getHeight());
+            linea++;
+        }
+    }
+    public String recortarCadena(FontMetrics fm, String codigo){
+        int i=10;
+        StringBuilder aux;
+        System.out.println("Recorta");
+        if(fm.stringWidth(codigo)>ancho){
+            aux=new StringBuilder(codigo.substring(0, 10));
+            while(fm.stringWidth(aux.toString())<(ancho-5) && i<codigo.length()){
+                aux.append(codigo.charAt(i));
+                i++;
+            }
+            if(i<codigo.length()){
+                aux.append("...");
+            }
+            return aux.toString();
+        }
+        return codigo;
     }
     
     @Override

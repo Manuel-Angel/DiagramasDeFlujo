@@ -11,7 +11,7 @@ import java.awt.event.MouseEvent;
 import modelos.Componente;
 import modelos.Diagrama;
 import vista.PanelDiagrama;
-import vista.ejemplo;
+import vista.FormularioCodigo;
 
 /**
  *
@@ -34,12 +34,14 @@ public class OyentePanel extends MouseAdapter {
      */
     private boolean selecciono;
     private int ux, uy;
+    FormularioCodigo formulario;
     public OyentePanel(Diagrama d, PanelDiagrama pane){
         diagrama=d;
         panel=pane;
         panel.addMouseMotionListener(this);
         panel.addMouseListener(this);
         panel.addMouseWheelListener(this);
+        formulario = new FormularioCodigo();
     }
     
     @Override
@@ -75,7 +77,6 @@ public class OyentePanel extends MouseAdapter {
               selecciono=diagrama.confirmaSeleccion(p1, p1);
           }
           p2=e.getPoint();
-          Object Codigo = null;
           if(selecciono&&e.getClickCount()==2){
               selecciono=diagrama.confirmaSeleccion(p1, p2);
               Componente select=diagrama.getComponenteSeleccionado();
@@ -84,9 +85,12 @@ public class OyentePanel extends MouseAdapter {
                   return ;
               }
               
-              ejemplo a = new ejemplo();
-              a.setVisible(selecciono);
-              a.comp=select;
+              
+              //a.comp=select;
+              formulario.setComp(select);
+              formulario.panel=panel;
+              formulario.setVisible(selecciono);
+              
 //              select.setCodigoInterior(a.getCodigoEscrito());
           }
     }

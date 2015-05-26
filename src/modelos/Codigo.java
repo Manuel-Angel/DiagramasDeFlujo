@@ -6,10 +6,13 @@
 package modelos;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
-import vista.ejemplo;
+import java.util.Scanner;
+import vista.FormularioCodigo;
 
 /**
  *
@@ -76,11 +79,46 @@ public class Codigo implements Componente {
         
         g.fillRect(x, y, ancho, alto);
         g.setColor(Color.BLACK);
-        g.drawString((codigoInterior==null)?"": codigoInterior, x, y+10);
         g.drawLine(x+arriba.x, y+arriba.y, x+ancho/2, y);
         g.drawLine(x+abajo.x, y+ abajo.y, x+ancho/2, y+alto);
         arriba.dibujar(g, this);
         abajo.dibujar(g, this);
+        g.setColor(Color.WHITE);
+        imprimirCodigo(g);
+    }
+    public void imprimirCodigo(Graphics g){
+        if(codigoInterior==null)return;
+        Font font = new Font("Courier new", Font.PLAIN, 12);
+        g.setFont(font);
+        FontMetrics metrics = g.getFontMetrics(font);
+        Scanner s= new Scanner(codigoInterior);
+        int linea=0;
+        while(s.hasNext() && (linea*metrics.getHeight()+15<alto)){
+            String aux=s.nextLine();
+            int messageWidth = metrics.stringWidth(aux);
+            if(messageWidth>ancho){
+                aux=recortarCadena(metrics, aux);
+            }
+            g.drawString(aux, x, y+15+linea*metrics.getHeight());
+            linea++;
+        }
+    }
+    public String recortarCadena(FontMetrics fm, String codigo){
+        int i=10;
+        StringBuilder aux;
+        System.out.println("Recorta");
+        if(fm.stringWidth(codigo)>ancho){
+            aux=new StringBuilder(codigo.substring(0, 10));
+            while(fm.stringWidth(aux.toString())<(ancho-5) && i<codigo.length()){
+                aux.append(codigo.charAt(i));
+                i++;
+            }
+            if(i<codigo.length()){
+                aux.append("...");
+            }
+            return aux.toString();
+        }
+        return codigo;
     }
     /*
     @Override
