@@ -15,15 +15,18 @@ import java.awt.event.MouseEvent;
 public class Hacermientras extends ComponenteContenedor{
     int romboX[];
     int romboY[];
+    Conector conectorSi; //el conector de que si se repite el ciclo, no es un conector interno porque no servira como socket para conectarsele mas componentes
     public Hacermientras(int x, int y) {
         super(x, y);
+        color= Color.ORANGE;
         arriba= new Conector(ancho/2, -60, 5, Color.BLACK);
-        abajo= new Conector(ancho/2, alto-220,5, Color.BLACK);//la variable
-        conectoresInternos= new Conector[2];
-        conectoresInternos[0]= new Conector(ancho/2, alto+30, 5, Color.BLACK);
-        conectoresInternos[1]= new Conector( ancho+30,alto/2, 5, Color.BLACK);
+        abajo= new Conector(ancho/2, alto+30,5, Color.BLACK);//la variable
+        conectoresInternos= new Conector[1];
+        conectoresInternos[0]= new Conector(ancho/2, -30, 5, Color.BLACK);
+        conectorSi=new Conector( ancho+30,alto/2, 5, Color.BLACK);
+        //conectoresInternos[1]= new Conector( ancho+30,alto/2, 5, Color.BLACK);
         // en el caso de los conectores, solo cambie las coordenadas de ubicacion puesto que ya tienen, la ejecucion que haran 
-        componentesInternos= new Componente[2];
+        componentesInternos= new Componente[1];
         romboX= new int[4];
         romboY= new int[4];
     }
@@ -49,12 +52,9 @@ public class Hacermientras extends ComponenteContenedor{
             g.drawString(codigoInterior, romboX[3]+10, romboY[3]+10);
         //conector si
         
-        g.drawLine(romboX[2], romboY[2], x+conectoresInternos[0].x, y + conectoresInternos[0].y); //linea
-        conectoresInternos[0].dibujar(g, this); //conector no
-        g.drawString("No", x+conectoresInternos[0].x+10, y+conectoresInternos[0].y);
         Componente aux=null;
-        int xIni=0, yIni=0;
-       // g.drawLine(xIni, yIni, x+abajo.x, y+arriba.y); //linea del primer componente de si al conector 
+        int xIni=0, yIni=0; 
+        g.drawLine(x+arriba.x, y+arriba.y,x+ conectoresInternos[0].x,y+conectoresInternos[0].y);//linea de arriba a el conectorInterno
         if(componentesInternos[0]!=null){
             aux= componentesInternos[0].getComponenteFinal();
             xIni=aux.getX() + aux.getAbajo().x;
@@ -63,26 +63,19 @@ public class Hacermientras extends ComponenteContenedor{
             xIni=x+conectoresInternos[0].x;
             yIni=y+conectoresInternos[0].y;
         }
-        //g.drawLine(xIni, yIni, x+arriba.x, y+arriba.y); //linea del ultimo componente de si al conector abajo
+        g.drawLine(xIni, yIni, romboX[0], romboY[0]); //linea del ultimo componente del conector interno al rombo
         
-        //conector no
-        g.drawLine(romboX[1], romboY[1], x+conectoresInternos[1].x, y+ conectoresInternos[1].y); //rombo a conector
-        conectoresInternos[1].dibujar(g, this); //conector si
-        g.drawString("Si", x+ conectoresInternos[1].x+10, y+conectoresInternos[1].y);
-        if(componentesInternos[1]!=null){
-            aux= componentesInternos[1].getComponenteFinal();
-            xIni=aux.getX() + aux.getAbajo().x;
-            yIni=aux.getY() + aux.getAbajo().y;
-        }else{
-            xIni=x+conectoresInternos[1].x;
-            yIni=y+conectoresInternos[1].y;
-        }
-        g.drawLine(xIni, yIni, xIni, y+arriba.y); //linea del ultimo componente de no al conector abajo, correcta
-        //g.drawLine(x+abajo.x, y, x, y);
+        g.drawLine(romboX[1], romboY[1], x+conectorSi.x, y + conectorSi.y); //linea del rombo al conector de si
+        conectorSi.dibujar(g, this); //conector si
+        g.drawString("Si", x+conectorSi.x+10, y+conectorSi.y);
         
-        g.drawLine(x+arriba.x, y+arriba.y, xIni, y+arriba.y);
         
-        g.drawLine(x+abajo.x, y+arriba.y,romboX[0], romboY[0]);
+        g.drawLine(x+conectoresInternos[0].x, y+conectoresInternos[0].y, x+conectorSi.x, y+conectoresInternos[0].y); //linea del conector interno hacia la derecha
+        g.drawLine(x+conectorSi.x, y+conectorSi.y,x+conectorSi.x,y+conectoresInternos[0].y); //linea del conector de si hacia arriba, para conectarse con el conector interno
+        
+        g.drawLine(x+abajo.x, y+abajo.y,romboX[2], romboY[2]); //imprime la linea del conector de abajo 
+        
+        conectoresInternos[0].dibujar(g, this);
         arriba.dibujar(g, this);
         abajo.dibujar(g, this);
     }
@@ -90,22 +83,34 @@ public class Hacermientras extends ComponenteContenedor{
     @Override
     public String generarCodigo() {
         StringBuilder codigo= new StringBuilder();
-       
-        
+        codigo.append("do{\n");
+        Componente aux= componentesInternos[0];
+        String linea;
+        while(aux!=null){
+            linea=aux.generarCodigo();
+            if(linea.length()>0){
+                linea=tabular(linea);
+                codigo.append(linea);
+            }
+            aux=aux.getSiguiente();
+        }
+        codigo.append("}while(").append(codigoInterior.trim()).append(");\n");
         return codigo.toString();
     }
 
     @Override
     public int getAlto() {
         int a= getAlturaComponentesInt();
-        abajo.y=conectoresInternos[0].y + a +30;
+        //abajo.y=conectoresInternos[0].y + a +30;
+        //abajo.y=30;
         return  abajo.y- arriba.y; //arriba.y es negativo, asi que si lo restamos es como sumarlo
     }
 
     @Override
     public int getAncho() {
         int anchoIzq=this.ancho/2; 
-        int anchoDer=anchoIzq + 30 + 10 + 20;
+        //int anchoDer=anchoIzq + 30 + 10 + 20;
+        int anchoDer=conectorSi.x-anchoIzq;
 //Configuracion de linea y texto 30 del largo minimo de la linea, 10 de lo que movimos la palabra "si" o "no" y 20 de lo que mide la palabra 
         
         return (anchoIzq<<16) | anchoDer;
@@ -145,37 +150,38 @@ public class Hacermientras extends ComponenteContenedor{
     @Override
     public void actualizaConectores() { //falta actualizar el otro
         int altoT=getAlturaComponentesInt();
-        abajo.y=conectoresInternos[0].y + altoT +30;
-        
+        //abajo.y=conectoresInternos[0].y + altoT +30; //no creo que necesite este
+        conectoresInternos[0].y=-30 - altoT;
+        int cambio=arriba.y;
+        arriba.y=conectoresInternos[0].y-30;
+        cambio-=arriba.y;
+        y+=cambio;//esto hace que se actualize el componente moviendose hacia abajo
         int anchoDer=this.ancho + 30;//30 del largo minimo de la linea
-        int si=anchoMaximoComp(componentesInternos[0]);
-        int no=anchoMaximoComp(componentesInternos[1]);
+        int conectorInt=anchoMaximoComp(componentesInternos[0]);
+        //int no=anchoMaximoComp(componentesInternos[1]);
         int aux;
         
-        aux= (si & (0x0000ffff)) +  this.ancho/2; //lado derecho de los componentes de si, mas la mitad del ancho (ya que empieza desde la mitad)
-        aux+= (no & (0xffff0000))>>16; //lado izquierdo de los componentes de no
+        aux= (conectorInt & (0x0000ffff)) +  this.ancho/2; //lado derecho de los componentes de si, mas la mitad del ancho (ya que empieza desde la mitad)
+        //aux+= (no & (0xffff0000))>>16; //lado izquierdo de los componentes de no
         //aux+= no & (0x0000ffff); //el lado derecho de los componentes de no //esto solo si se va a medir el ancho, no cuando se actualiza
         anchoDer= Math.max(anchoDer, aux);
         
-        conectoresInternos[1].x=anchoDer;
+        //conectoresInternos[1].x=anchoDer;
+        conectorSi.x=anchoDer;
     }
     private int getAlturaComponentesInt(){
-        int altoT=0, aux=conectoresInternos[1].y - conectoresInternos[0].y;
+        int altoT=0;//, aux=conectoresInternos[1].y - conectoresInternos[0].y;
         Componente comp=componentesInternos[0];
         while(comp!=null){
             altoT+=comp.getAlto();
             comp=comp.getSiguiente();
         }
+        /*
         comp=componentesInternos[1];
         while(comp!=null){
             aux+=comp.getAlto();
             comp=comp.getSiguiente();
-        }
-        return Math.max(altoT, aux);
+        }*/
+        return altoT;
     }
-    /*
-    @Override
-    public void mouseClick(MouseEvent evento) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }*/
 }

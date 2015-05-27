@@ -112,7 +112,7 @@ public class Lectura implements Componente{
         g.fillPolygon(px, py, 4);
         arriba.dibujar(g, this);
         abajo.dibujar(g, this);
-        g.setColor(Color.WHITE);
+        g.setColor(Color.BLACK);
         imprimirCodigo(g);
     }
     public void imprimirCodigo(Graphics g){
@@ -135,7 +135,6 @@ public class Lectura implements Componente{
     public String recortarCadena(FontMetrics fm, String codigo){
         int i=10;
         StringBuilder aux;
-        System.out.println("Recorta");
         if(fm.stringWidth(codigo)>ancho){
             aux=new StringBuilder(codigo.substring(0, 10));
             while(fm.stringWidth(aux.toString())<(ancho-5) && i<codigo.length()){
@@ -154,7 +153,7 @@ public class Lectura implements Componente{
     public String generarCodigo() {
         //aqui aun no se como cambiaremos de lista de variables a puros scanf leyento esas variables
         //creo que hay que hacer un objeto variable, y guardarlo en el inicio o algo asi
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return codigoInterior;
     }
 
     @Override

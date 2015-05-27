@@ -258,7 +258,7 @@ public class Diagrama {
     public void reacomoda() { //reacomodarlos se hara un desmadre si hay que acomodar contenedores adentro de contenedores, pues el primer contenedor tambien se tiene que actualizar D:
         for (int i = 0; i < paresAEnlazar; i++) {
             Componente p= bufferParesAEnlazar[i][0].getComponentePrincipio(false);
-            if(p instanceof ComponenteContenedor){
+            if(p instanceof ComponenteContenedor){ //creo que este if no es necesario
                 ((ComponenteContenedor)p).actualizaConectores();
                 ((ComponenteContenedor)p).acomodaComponentesInt();
             }
@@ -326,5 +326,33 @@ public class Diagrama {
         for (Componente componente : componentes) {
             componente.setSelected(true);
         }
+    }
+
+    /**
+     * @return the compInicial
+     */
+    public Inicio getCompInicial() {
+        return compInicial;
+    }
+
+    /**
+     * @param compInicial the compInicial to set
+     */
+    public void setCompInicial(Inicio compInicial) {
+        this.compInicial = compInicial;
+    }
+
+    /**
+     * @return the compFinal
+     */
+    public Fin getCompFinal() {
+        return compFinal;
+    }
+
+    /**
+     * @param compFinal the compFinal to set
+     */
+    public void setCompFinal(Fin compFinal) {
+        this.compFinal = compFinal;
     }
 }

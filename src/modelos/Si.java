@@ -86,6 +86,7 @@ public class Si extends ComponenteContenedor{
         g.drawLine(x+arriba.x, y+arriba.y,romboX[0], romboY[0]);
         arriba.dibujar(g, this);
         abajo.dibujar(g, this);
+        g.setColor(Color.BLACK);
         imprimirCodigo(g);
     }
     public void imprimirCodigo(Graphics g){
@@ -110,7 +111,6 @@ public class Si extends ComponenteContenedor{
     public String recortarCadena(FontMetrics fm, String codigo, int tab){
         int i=10;
         StringBuilder aux;
-        System.out.println("Recorta");
         //if(fm.stringWidth(codigo)>ancho){ //esto no era necesario
             aux=new StringBuilder(codigo.substring(0, 10));
             while(fm.stringWidth(aux.toString())<(ancho-15-tab*2) && i<codigo.length()){
@@ -128,14 +128,16 @@ public class Si extends ComponenteContenedor{
     @Override
     public String generarCodigo() {
         StringBuilder codigo= new StringBuilder();
-        codigo.append("if(").append(codigoInterior).append("){\n");
+        codigo.append("if(").append(codigoInterior.trim()).append("){\n");
         Componente aux= componentesInternos[0];
         String linea;
         while(aux!=null){
             linea=aux.generarCodigo();
             if(linea.length()>0){
-                codigo.append("\t").append(linea).append("\n");
+                linea=tabular(linea);
+                codigo.append(linea);
             }
+            aux=aux.getSiguiente();
         }
         aux= componentesInternos[1];
         
@@ -143,8 +145,10 @@ public class Si extends ComponenteContenedor{
         while(aux!=null){
             linea=aux.generarCodigo();
             if(linea.length()>0){
-                sino.append("\t").append(linea);
+                linea=tabular(linea);
+                sino.append(linea);
             }
+            aux=aux.getSiguiente();
         }
         if(sino.length()>0){
             codigo.append("} else {\n");
@@ -154,7 +158,7 @@ public class Si extends ComponenteContenedor{
         
         return codigo.toString();
     }
-
+    
     @Override
     public int getAlto() {
         int a= getAlturaComponentesInt();
@@ -230,7 +234,7 @@ public class Si extends ComponenteContenedor{
         conectoresInternos[1].x=anchoDer;
     }
     private int getAlturaComponentesInt(){
-        int altoT=0, aux=conectoresInternos[1].y - conectoresInternos[0].y;
+        int altoT=0, aux=conectoresInternos[1].y - conectoresInternos[0].y;//el de no menos el de si
         Componente comp=componentesInternos[0];
         while(comp!=null){
             altoT+=comp.getAlto();

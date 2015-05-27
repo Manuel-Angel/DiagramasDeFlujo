@@ -1,4 +1,4 @@
-
+las que tienen un ** esque ya se hicieron
 
 *hacer que si dos figuras estan una ensima de la otra, y se da clic en el area donde estan solapadas,
 que solo se seleccione la que esta arriba, que no se seleccione la que esta abajo.
@@ -9,7 +9,7 @@ que solo se seleccione la que esta arriba, que no se seleccione la que esta abaj
 
 *Agregar la funcion de borrado, por ejemplo cuando este seleccionada una figura, que cuando se presione suprimir, se elimine esa figura, y si estaba conectada a una arriba y otra abajo, que estas se conecten entre si y se alinien, osea que si habia mas figuras conectadas a estas, que todas se muevan hacia arriba o hacia abajo segun haga falta.
 
-*agregar la funcion de escritura en las figuras, que cuando se tenga una y solo una figura seleccionada, si se teclea algo, que salga una ventana emergente donde se escriba el codigo, que esta ventana tenga el boton de guardado y cuando se oprima que el codigo escrito se guarde en la figura (variable llamada codigoInterno) 
+**agregar la funcion de escritura en las figuras, que cuando se tenga una y solo una figura seleccionada, si se teclea algo, que salga una ventana emergente donde se escriba el codigo, que esta ventana tenga el boton de guardado y cuando se oprima que el codigo escrito se guarde en la figura (variable llamada codigoInterno) 
 
 *implementar las funciones generarCodigo de todos los componentes,  (ya adelante la del if, pero no funciona sin las otras) para hacer posible generar el codigo en C, esto implica hacer el analisis lexico, sintactico y semantico de cada componente (lo cual es mas facil que hacerlo todo en uno porque ya sabes que debe de ir en cada uno)
 
@@ -19,9 +19,9 @@ que solo se seleccione la que esta arriba, que no se seleccione la que esta abaj
 
 *hacer mas eficiente los metodos que se usan para enlazar y reacomodar los componentes (clase Diagrama) ahorita son cuadraticos, asi que si se tiene un diagrama de 100 componentes se va a alentar si la compu no esta chida.
 
-*terminar de implementar el if (la clase si) que es la mas dificil, si se puede hacer esta las demas clases Mientras y HacerMientras seran mas faciles, porque toda la logica se encuentra en la clase ComponenteContenedor (la logica de como le hace para acomodar los componentes adentro del if, y que no se solapen las figuras, que se autoacomoden).
+**terminar de implementar el if (la clase si) que es la mas dificil, si se puede hacer esta las demas clases Mientras y HacerMientras seran mas faciles, porque toda la logica se encuentra en la clase ComponenteContenedor (la logica de como le hace para acomodar los componentes adentro del if, y que no se solapen las figuras, que se autoacomoden).
 
-*Implementar un ScrollPane para que si el diagrama es muy grande, se pueda mover las vista.
+**Implementar un ScrollPane para que si el diagrama es muy grande, se pueda mover las vista.
 
 *Implementar una funcion de zoom tambien seria interesante, pero esta dificil
 
@@ -29,3 +29,43 @@ Esta sujeto a nuevos bugs que surjan al implementar nuevas funcionalidades
 
 
 le acabo de hacer la implementacion al scrollPane, y le modifique la opcion de agregar las figuras, las agregara a donde se encuentre la vista segun las scrollBar
+
+cosas que le faltan a la interfaz:
+*La funcionalidad de borrar elementos
+*la funcionalidad de que cuando le remueves un componente de una serie 
+de componentes cortandola por la mitad,la serie se arregle solita y 
+se conecte otra vez, excepto el componente que se saco.
+*cambiar el color de los conectores cuando se seleccionan
+
+les envio esto para que vean mi avanze y lo que falta hacer, necesito que me digan sus avanzes 
+tambien, se supone que haran los parsers, esto es lo que considero que se necesita:
+
+solo se necesitan 4: 
+*el del inicio, donde solo se declararan varibles 
+globales y si acaso inicialisarlas a un valor. habran sentencias como:
+
+entero contador;
+flotante pi=3.141592;
+char letra;
+
+la sintaxis es super facil
+*El de los rectangulos que contienen el codigo, contienen declaraciones 
+y asignaciones tambien, hay que aplicar los "arboles de expresion" y esas madres.
+este si esta mas complicado, contiene expresiones como:
+
+entero contador=3*4+1;
+flotante a= contador*pi/10.0+sin(3+contador); //a la hora de parsear hay que checar las funciones que se usan, sin() esta en math, asi que habra que agregar el #include
+a=a*20;
+
+*El parser de las condiciones logicas, que se usara para el if y el ciclo, ya que los dos reciben 
+una condicion, este esta mas perro aun, tiene sentencias como:
+
+a<10 & (contador*2)==90 | a<0
+!(a==b && c==d)
+
+*El parser de la lectura, este es el mas facil de todos, solo recibira una lista de variables 
+separadas por comas, como la siguiente:
+a,pi, contador, letra
+
+cuando se compile se cambiara eso por esto:
+scanf("%d%f%d%c", &a, &pi,&contador,&letra);

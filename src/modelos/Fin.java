@@ -6,9 +6,12 @@
 package modelos;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.util.Scanner;
 
 /**
  *
@@ -72,13 +75,49 @@ public class Fin implements Componente{
         g.fillOval(x, y, ancho, alto);
         g.setColor(Color.BLACK);
         g.drawLine(x+ancho/2, y, x+arriba.x, y+arriba.y);
-        g.drawString("Fin", x+ancho/3, y+alto/2);
+        g.drawString("Fin", x+ancho/3+10, y+14);
         arriba.dibujar(g, this);
+        imprimirCodigo(g);
+    }
+    public void imprimirCodigo(Graphics g){
+        if(codigoInterior==null)return;
+        Font font = new Font("Courier new", Font.PLAIN, 12);
+        g.setFont(font);
+        FontMetrics metrics = g.getFontMetrics(font);
+        Scanner s= new Scanner(codigoInterior);
+        int linea=0;
+        while(s.hasNext() && (linea*metrics.getHeight()+15<alto)&&linea <3){
+            String aux=s.nextLine();
+            int messageWidth = metrics.stringWidth(aux);
+            System.out.println("linea:"+messageWidth+" ancho:"+(ancho-28));
+            if(messageWidth>=(ancho-25)){
+                aux=recortarCadena(metrics, aux);
+            }
+            g.drawString(aux, x+10, y+alto/4+10+linea*metrics.getHeight());
+            linea++;
+        }
+    }
+    public String recortarCadena(FontMetrics fm, String codigo){
+        int i=10;
+        StringBuilder aux;
+        //if(fm.stringWidth(codigo)>ancho){//esto no era necesario
+            aux=new StringBuilder(codigo.substring(0, 10));
+            while(fm.stringWidth(aux.toString())<(ancho-25) && i<codigo.length()){
+                aux.append(codigo.charAt(i));
+                i++;
+            }
+            if(i<codigo.length()){
+                aux.append("...");
+            }
+            return aux.toString();
+        //}
+        //return codigo;
     }
 
     @Override
     public String generarCodigo() {
-        return "return 0"; //aqui  
+        return "return 0\n";
+                //+ "}";   
     }
 
     @Override

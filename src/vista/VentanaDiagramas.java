@@ -37,6 +37,7 @@ public class VentanaDiagramas extends javax.swing.JFrame {
         //editar
         reacomoda.addActionListener(o);
         seleccionaTodos.addActionListener(o);
+        compilar.addActionListener(o);
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -57,6 +58,7 @@ public class VentanaDiagramas extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         archivo = new javax.swing.JMenu();
+        compilar = new javax.swing.JMenuItem();
         salir = new javax.swing.JMenuItem();
         insertar = new javax.swing.JMenu();
         inicio = new javax.swing.JMenuItem();
@@ -95,6 +97,9 @@ public class VentanaDiagramas extends javax.swing.JFrame {
         getContentPane().add(jLabel2, java.awt.BorderLayout.PAGE_END);
 
         archivo.setText("Archivo");
+
+        compilar.setText("Compilar");
+        archivo.add(compilar);
 
         salir.setText("Salir");
         archivo.add(salir);
@@ -192,6 +197,7 @@ public class VentanaDiagramas extends javax.swing.JFrame {
     private javax.swing.JMenu archivo;
     private javax.swing.JMenuItem ciclo;
     private javax.swing.JMenuItem codigo;
+    private javax.swing.JMenuItem compilar;
     private javax.swing.JMenu editar;
     private javax.swing.JMenuItem fin;
     private javax.swing.JMenuItem hacermientras;

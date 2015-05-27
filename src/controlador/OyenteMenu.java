@@ -75,6 +75,14 @@ public class OyenteMenu implements ActionListener {
             diagrama.reacomodaTodos();
         } else if(accion.equals("Selecciona todos")){
             diagrama.seleccionaTodos();
+        } else if(accion.equals("Compilar")){
+            if(diagrama.getCompInicial()==null){
+                System.out.println("No hay componente de inicio");
+                return ;
+            }
+            String codigo=diagrama.getCompInicial().generarCodigo();
+            System.out.println("Codigo:\n");
+            System.out.println(codigo);
         }
         panel.repaint();
     }

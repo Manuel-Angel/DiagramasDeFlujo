@@ -8,6 +8,7 @@ package modelos;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.util.Scanner;
 
 /**
  *
@@ -189,6 +190,11 @@ public abstract class ComponenteContenedor implements Componente {
         for (int i = 0; i < componentesInternos.length; i++) {
             if(componentesInternos[i]!=null && !componentesInternos[i].isSelected()){
                 componentesInternos[i].traslada(dx, dy);
+                Componente aux= componentesInternos[i].getSiguiente();
+                while(aux!=null){
+                    aux.traslada(dx, dy);
+                    aux=aux.getSiguiente();
+                }
             }
         }
     }
@@ -248,7 +254,7 @@ public abstract class ComponenteContenedor implements Componente {
                 y= this.y + conectoresInternos[i].y;
                 componentesInternos[i].setY(y - componentesInternos[i].getArriba().y);
                 Componente aux= componentesInternos[i];//.getSiguiente();
-                if(aux instanceof ComponenteContenedor){
+                if(aux instanceof ComponenteContenedor){ //creo que este if tampoco es necesario porque en el alineaCon se manda a llamar el actualizaConectores y el acomoda componentes
                     ((ComponenteContenedor)aux).actualizaConectores();
                     ((ComponenteContenedor)aux).acomodaComponentesInt();
                 }
@@ -368,4 +374,13 @@ public abstract class ComponenteContenedor implements Componente {
      * porque Diagrama se encargara de eso.
      */
     public abstract void actualizaConectores();
+    protected String tabular(String cod){
+        Scanner s= new Scanner(cod.trim());
+        StringBuilder codigoTab=new StringBuilder();
+        while(s.hasNext()){
+            codigoTab.append('\t');
+            codigoTab.append(s.nextLine()).append('\n');
+        }
+        return codigoTab.toString();
+    }
 }

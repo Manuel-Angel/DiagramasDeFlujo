@@ -70,6 +70,7 @@ public class Inicio implements Componente {
         g.drawString("Inicio", x+ancho/3, y+alto/4);
         g.drawLine(x+ancho/2, y+alto, x+abajo.x, y+abajo.y);
         abajo.dibujar(g, this);
+        g.setColor(Color.BLACK);
         imprimirCodigo(g);
     }
     public void imprimirCodigo(Graphics g){
@@ -82,7 +83,7 @@ public class Inicio implements Componente {
         while(s.hasNext() && (linea*metrics.getHeight()+15<alto) && linea<3){
             String aux=s.nextLine();
             int messageWidth = metrics.stringWidth(aux);
-            if(messageWidth>ancho){
+            if(messageWidth>(ancho-25)){
                 aux=recortarCadena(metrics, aux);
             }
             g.drawString(aux, x+10, y+alto/4+10+linea*metrics.getHeight());
@@ -92,10 +93,9 @@ public class Inicio implements Componente {
     public String recortarCadena(FontMetrics fm, String codigo){
         int i=10;
         StringBuilder aux;
-        System.out.println("Recorta");
-        if(fm.stringWidth(codigo)>ancho){
+        //if(fm.stringWidth(codigo)>ancho){
             aux=new StringBuilder(codigo.substring(0, 10));
-            while(fm.stringWidth(aux.toString())<(ancho-19) && i<codigo.length()){
+            while(fm.stringWidth(aux.toString())<(ancho-25) && i<codigo.length()){
                 aux.append(codigo.charAt(i));
                 i++;
             }
@@ -103,17 +103,40 @@ public class Inicio implements Componente {
                 aux.append("...");
             }
             return aux.toString();
-        }
-        return codigo;
+        //}
+        //return codigo;
     }
-
+    /**
+     * Genera todo el codigo de todo el programa.
+     * @return el codigo completo
+     */
     @Override
     public String generarCodigo() {
-        return "#include<stdio.h>\n"
-                + codigoInterior //contendra las declaraciones de variables globales
-                + "\nint main(){\n";
+        StringBuilder codigoCompleto= new StringBuilder("#include<stdio.h>\n");
+        codigoCompleto.append(codigoInterior);//contendra las declaraciones de variables globales
+        codigoCompleto.append("\nint main(){\n");
+        Componente aux=siguiente;
+        String cod;
+        while(aux!=null){
+            cod=aux.generarCodigo();
+            if(cod.length()>0){
+                cod=tabular(cod);
+                codigoCompleto.append(cod);
+            }
+            aux=aux.getSiguiente();
+        }
+        codigoCompleto.append('}');
+        return codigoCompleto.toString();
     }
-
+    protected String tabular(String cod){
+        Scanner s= new Scanner(cod);
+        StringBuilder codigoTab=new StringBuilder();
+        while(s.hasNext()){
+            codigoTab.append('\t');
+            codigoTab.append(s.nextLine()).append('\n');
+        }
+        return codigoTab.toString();
+    }
     @Override
     public Componente getComponenteFinal() {
         if(siguiente==null)return this;
