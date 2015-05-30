@@ -58,6 +58,7 @@ public class Inicio implements Componente {
         alto =80;
         ancho=(int)(alto*1.618);
         abajo= new Conector(ancho/2,alto+30,5,Color.BLACK);
+        codigoInterior="";
     }
     @Override
     public void dibujar(Graphics g) {
@@ -113,13 +114,14 @@ public class Inicio implements Componente {
     @Override
     public String generarCodigo() {
         StringBuilder codigoCompleto= new StringBuilder("#include<stdio.h>\n");
-        codigoCompleto.append(codigoInterior);//contendra las declaraciones de variables globales
+        if(codigoInterior!=null)
+            codigoCompleto.append(codigoInterior);//contendra las declaraciones de variables globales
         codigoCompleto.append("\nint main(){\n");
         Componente aux=siguiente;
         String cod;
         while(aux!=null){
             cod=aux.generarCodigo();
-            if(cod.length()>0){
+            if(cod!=null && cod.length()>0){
                 cod=tabular(cod);
                 codigoCompleto.append(cod);
             }

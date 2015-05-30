@@ -9,18 +9,16 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.event.MouseEvent;
+import java.awt.geom.GeneralPath;
 import java.util.Scanner;
-import vista.FormularioCodigo;
 
 /**
  *
  * @author Manuel Angel Muñoz S
  */
-
-public class Codigo implements Componente {
-
+public class Imprimir implements Componente{
     Conector abajo;
     Conector arriba;
     int a=0;
@@ -61,28 +59,49 @@ public class Codigo implements Componente {
     private Componente anterior;
     
     private String codigoInterior;
-    public Codigo(int x, int y){
+    
+    private GeneralPath fig;
+    public Imprimir(int x, int y){
         this.x=x;
         this.y=y;
-        color= Color.GREEN;
+        color= Color.RED;
         colorSeleccion=Color.BLUE;  
         alto=80;
         ancho=(int)(1.618*alto);
         arriba= new Conector(ancho/2, -30, 5, Color.BLACK);
         abajo= new Conector(ancho/2, alto+30,5, Color.BLACK);
+        fig= new GeneralPath();
     }
     @Override
+    public String getCodigoInterior() {
+        return codigoInterior;
+    }
+
+    @Override
+    public void setCodigoInterior(String codigo) {
+        codigoInterior=codigo;
+    }
+
+    @Override
     public void dibujar(Graphics g) {
+        int dif=10;
+        g.setColor(Color.BLACK);
+        g.drawLine(x+arriba.x, y+arriba.y, x+ancho/2, y);
+        g.drawLine(x+abajo.x, y+ abajo.y, x+ancho/2, y+alto-dif);
+        arriba.dibujar(g, this);
+        abajo.dibujar(g, this);
         if(selected)
             g.setColor(colorSeleccion);
         else g.setColor(color);
-        
-        g.fillRect(x, y, ancho, alto);
-        g.setColor(Color.BLACK);
-        g.drawLine(x+arriba.x, y+arriba.y, x+ancho/2, y);
-        g.drawLine(x+abajo.x, y+ abajo.y, x+ancho/2, y+alto);
-        arriba.dibujar(g, this);
-        abajo.dibujar(g, this);
+        fig.reset();
+        fig.moveTo(x+ancho, y+alto-dif);
+        fig.lineTo(x+ancho, y);
+        fig.lineTo(x, y);
+        fig.lineTo(x, y+alto);
+        fig.curveTo(x+ancho/2, y+alto+dif*2, x+ancho/2, y+alto-dif*3,
+                x+ancho, y+alto-dif);
+        Graphics2D g2= (Graphics2D)g;
+        g2.fill(fig);        
         g.setColor(Color.WHITE);
         imprimirCodigo(g);
     }
@@ -120,19 +139,8 @@ public class Codigo implements Componente {
         }
         return codigo;
     }
-    /*
-    @Override
-    public void mouseClick(MouseEvent evento){
-        if(evento.getClickCount()==1){
-            ejemplo a = new ejemplo();
-            a.setVisible(true);
-        }
-    }*/
-
     @Override
     public String generarCodigo() {
-        // aqui se va a hacer todo el parseo y ese pedo del JAVACC y asi
-        //por mientras supondre que el usuario ya metio el codigo en lenguaje C
         return codigoInterior;
     }
 
@@ -143,6 +151,23 @@ public class Codigo implements Componente {
         Componente aux=siguiente;
         while(aux.getSiguiente()!=null && aux.getSiguiente().isSelected()== this.isSelected()){  //buscara a los que esten en su mismo estado, si este componente esta seleccionado, buscara hasta encontrar uno no seleccionado 
             aux=aux.getSiguiente();
+        }
+        return aux;
+    }
+
+    @Override
+    public Componente getComponentePrincipio(boolean modo) {
+        if(anterior==null)return this;
+        Componente aux=anterior;
+        if(modo){
+            if(anterior.isSelected()!= this.isSelected())return this;
+            while(aux.getAnterior()!=null && aux.getAnterior().isSelected()==this.isSelected()){ //buscara a los que esten en su mismo estado, si este componente esta seleccionado, buscara hasta encontrar uno no seleccionado 
+                aux=aux.getAnterior();
+            }
+            return aux;
+        }
+        while(aux.getAnterior()!=null){ 
+                aux=aux.getAnterior();
         }
         return aux;
     }
@@ -199,56 +224,26 @@ public class Codigo implements Componente {
     }
 
     @Override
-    public boolean estaEnArea(Point a, Point b) { 
+    public boolean estaEnArea(Point a, Point b) {
         int minX,minY, maxX, maxY;
         minX=Math.min(a.x, b.x);
         minY=Math.min(a.y, b.y);
         maxX=Math.max(a.x, b.x);
         maxY=Math.max(a.y, b.y);
-        
         if(minX<=(x+ancho) && minY<=(y+alto)){ //checa esquina superior izquierda
             if(maxX >= x && maxY>=y){
-                return true;
+                //return true;
+                return fig.intersects(minX, minY, maxX, maxY);
             }
         }
+        //return fig.intersects(minX, minY, maxX, maxY);
         return false;
     }
-    
-    
 
     @Override
     public void traslada(int dx, int dy) {
         x+=dx;
         y+=dy;
-    }
-
-    @Override
-    public String getCodigoInterior() {
-        return codigoInterior;
-    }
-
-    @Override
-    public void setCodigoInterior(String codigo) {
-        codigoInterior=codigo;
-    }
-    
-   
-
-    @Override
-    public Componente getComponentePrincipio(boolean modo) {
-        if(anterior==null)return this;
-        Componente aux=anterior;
-        if(modo){
-            if(anterior.isSelected()!= this.isSelected())return this;
-            while(aux.getAnterior()!=null && aux.getAnterior().isSelected()==this.isSelected()){ //buscara a los que esten en su mismo estado, si este componente esta seleccionado, buscara hasta encontrar uno no seleccionado 
-                aux=aux.getAnterior();
-            }
-            return aux;
-        }
-        while(aux.getAnterior()!=null){ 
-                aux=aux.getAnterior();
-        }
-        return aux;
     }
 
     @Override
@@ -261,7 +256,7 @@ public class Codigo implements Componente {
         return abajo;
     }
 
-    @Override
+     @Override
     public boolean intersectaConectorBajo(Componente c) {
         if(c.getArriba()==null)
             return false;
@@ -273,6 +268,7 @@ public class Codigo implements Componente {
         //System.out.println("distancia entre puntos: " + abajo.distance(c.getArriba()) +" diametro: " + abajo.radio*2);
         return false;
     }
+
     @Override
     public void alineaCon(Componente c) {
         int x,y;
@@ -296,4 +292,5 @@ public class Codigo implements Componente {
         a|=ancho/2;
         return a;
     }
+    
 }

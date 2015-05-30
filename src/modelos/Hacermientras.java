@@ -72,9 +72,11 @@ public class Hacermientras extends ComponenteContenedor{
         
         g.drawLine(x+conectoresInternos[0].x, y+conectoresInternos[0].y, x+conectorSi.x, y+conectoresInternos[0].y); //linea del conector interno hacia la derecha
         g.drawLine(x+conectorSi.x, y+conectorSi.y,x+conectorSi.x,y+conectoresInternos[0].y); //linea del conector de si hacia arriba, para conectarse con el conector interno
+        //imprime la flechita
+        g.drawLine(x+conectoresInternos[0].x+5, y+conectoresInternos[0].y, x+conectoresInternos[0].x+14, y+conectoresInternos[0].y-5);
+        g.drawLine(x+conectoresInternos[0].x+5, y+conectoresInternos[0].y, x+conectoresInternos[0].x+14, y+conectoresInternos[0].y+5);
         
         g.drawLine(x+abajo.x, y+abajo.y,romboX[2], romboY[2]); //imprime la linea del conector de abajo 
-        
         conectoresInternos[0].dibujar(g, this);
         arriba.dibujar(g, this);
         abajo.dibujar(g, this);
@@ -88,13 +90,14 @@ public class Hacermientras extends ComponenteContenedor{
         String linea;
         while(aux!=null){
             linea=aux.generarCodigo();
-            if(linea.length()>0){
+            if(linea != null && linea.length()>0){
                 linea=tabular(linea);
                 codigo.append(linea);
             }
             aux=aux.getSiguiente();
         }
-        codigo.append("}while(").append(codigoInterior.trim()).append(");\n");
+        
+        codigo.append("}while(").append((codigoInterior!=null)?codigoInterior.trim():"1").append(");\n");
         return codigo.toString();
     }
 

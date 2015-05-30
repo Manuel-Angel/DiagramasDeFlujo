@@ -89,7 +89,7 @@ public class Fin implements Componente{
         while(s.hasNext() && (linea*metrics.getHeight()+15<alto)&&linea <3){
             String aux=s.nextLine();
             int messageWidth = metrics.stringWidth(aux);
-            System.out.println("linea:"+messageWidth+" ancho:"+(ancho-28));
+            //System.out.println("linea:"+messageWidth+" ancho:"+(ancho-28));
             if(messageWidth>=(ancho-25)){
                 aux=recortarCadena(metrics, aux);
             }

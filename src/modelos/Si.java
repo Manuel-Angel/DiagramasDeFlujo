@@ -128,12 +128,12 @@ public class Si extends ComponenteContenedor{
     @Override
     public String generarCodigo() {
         StringBuilder codigo= new StringBuilder();
-        codigo.append("if(").append(codigoInterior.trim()).append("){\n");
+        codigo.append("if(").append((codigoInterior!=null)?codigoInterior.trim():"1").append("){\n");
         Componente aux= componentesInternos[0];
         String linea;
         while(aux!=null){
             linea=aux.generarCodigo();
-            if(linea.length()>0){
+            if(linea != null && linea.length()>0){
                 linea=tabular(linea);
                 codigo.append(linea);
             }
@@ -144,7 +144,7 @@ public class Si extends ComponenteContenedor{
         StringBuilder sino=new StringBuilder();
         while(aux!=null){
             linea=aux.generarCodigo();
-            if(linea.length()>0){
+            if(linea !=null &&linea.length()>0){
                 linea=tabular(linea);
                 sino.append(linea);
             }
@@ -167,7 +167,7 @@ public class Si extends ComponenteContenedor{
     }
 
     @Override
-    public int getAncho() {
+    public int getAncho() { //****ahora dudo que todo el proceso hecho aqui tenga efecto, tal vez solo con regresar los valores basado en los conectores **aqui**
         int anchoIzq=this.ancho/2; 
         //int anchoDer=anchoIzq + 30 + 10 + 20;//30 del largo minimo de la linea, 10 de lo que movimos la palabra "si" o "no" y 20 de lo que mide la palabra 
         int anchoDer=conectoresInternos[1].x  - anchoIzq + 10+20; //*-*

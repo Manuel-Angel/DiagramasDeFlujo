@@ -280,38 +280,46 @@ public abstract class ComponenteContenedor implements Componente {
         for (int i = 0; i < conectoresInternos.length; i++) {
             if(intersectaConector(c,conectoresInternos[i])){
                 if(componentesInternos[i]==c )return true; //si ya estan enlazados no hace nada
-                if(c.getAnterior()!=null){ // para el conector de arriba del elemento a agregar, se desconecta de su actual componente y se iguala a null
-                    c.getAnterior().setSiguiente(null);
-                    //c.setAnterior(null); 
-                }
-                c.setAnterior(this);//mejor que no sea nulo, que sea este elemento, ya lo pense y no creo que cause problemas... tantos
-                Componente fin;
-                //if(c.getSiguiente()==null){// para el conector de abajo, se conecta con el componente que estaba al principio de este contenedor
-                    //fin=c;
-                    //c.setSiguiente(componentesInternos[i]);
-                    //componentesInternos[i].setAnterior(c);
-                //}else{
-                    fin= c.getComponenteFinal();
-                    if(fin instanceof Fin){
-                        fin.setX(fin.getX() + 100);
-                        if(fin==c)return true; //si se esta intentando agregar un Fin,  retorna true pues no debe de agregarse y debe de ignorarse
-                        fin=fin.getAnterior();
-                    }
-                    if(fin.getSiguiente()!=null){
-                        fin.getSiguiente().setAnterior(null);
-                    }
-                    //fin.setSiguiente(componentesInternos[i]);
-                    //componentesInternos[i].setAnterior(fin);
-                //}
-                if(componentesInternos[i]!=null){
-                    fin.setSiguiente(componentesInternos[i]);
-                    componentesInternos[i].setAnterior(fin);
-                }else fin.setSiguiente(null);
-                componentesInternos[i]=c;
+                addComponenteInterior(c,i);
                 return true;
             }
         }
         return false;
+    }
+    /**
+     * Agrega el componente c al conector i de este contenedor
+     * @param c
+     * @param i 
+     */
+    public void addComponenteInterior(Componente c, int i){
+        if(c.getAnterior()!=null){ // para el conector de arriba del elemento a agregar, se desconecta de su actual componente y se iguala a null
+            c.getAnterior().setSiguiente(null);
+            //c.setAnterior(null); 
+        }
+        c.setAnterior(this);//mejor que no sea nulo, que sea este elemento, ya lo pense y no creo que cause problemas... tantos
+        Componente fin;
+        //if(c.getSiguiente()==null){// para el conector de abajo, se conecta con el componente que estaba al principio de este contenedor
+            //fin=c;
+            //c.setSiguiente(componentesInternos[i]);
+            //componentesInternos[i].setAnterior(c);
+        //}else{
+            fin= c.getComponenteFinal();
+            if(fin instanceof Fin){
+                fin.setX(fin.getX() + 100);
+                if(fin==c)return ; //si se esta intentando agregar un Fin,  retorna true pues no debe de agregarse y debe de ignorarse
+                fin=fin.getAnterior();
+            }
+            if(fin.getSiguiente()!=null){
+                fin.getSiguiente().setAnterior(null);
+            }
+            //fin.setSiguiente(componentesInternos[i]);
+            //componentesInternos[i].setAnterior(fin);
+        //}
+        if(componentesInternos[i]!=null){
+            fin.setSiguiente(componentesInternos[i]);
+            componentesInternos[i].setAnterior(fin);
+        }else fin.setSiguiente(null);
+        componentesInternos[i]=c;
     }
     /**
      * Remueve un componente del contenedor si se encuentraba conectado a uno
@@ -342,6 +350,12 @@ public abstract class ComponenteContenedor implements Componente {
                 break;
             }
         }
+    }
+    public int enQueConectorEsta(Componente c){
+        for (int ci = 0; ci < componentesInternos.length; ci++) {
+            if(componentesInternos[ci]==c)return ci;
+        }
+        return -1;
     }
     /**
      * Retorna 0 si el componente c esta en el contenedor y ademas es el primero

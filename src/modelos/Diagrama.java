@@ -95,7 +95,7 @@ public class Diagrama {
         if(comp instanceof Fin){
             if(compFinal==null){
                 compFinal=(Fin)comp;
-            }else return false;
+            }//else return false; //para permitir mas de un return 0;
         }
         componentes.add(comp);
         return true;
@@ -186,7 +186,7 @@ public class Diagrama {
         }
     }
     /**
-     * Retorna 0 si el componente c esta en el contenedor y ademas es el primero
+     * Retorna 0 si el componente c esta en el contenedor y ademas es el primero,
      * retorna 1 si esta en el contenedor pero no es el primero y retorna
      * 2 si no esta en el contenedor.
      * @param c
@@ -296,7 +296,7 @@ public class Diagrama {
      */
     public void confirmaEnlazado() {
         Componente noEnlazadosArriba[], noEnlazadosAbajo[];
-        noEnlazadosArriba= new Componente[20];
+        noEnlazadosArriba= new Componente[20]; //para diagramas grandes hay que hacer mas grande estos buffer
         noEnlazadosAbajo = new Componente[20];
         int arriba=0, abajo=0;
         for (Componente componente : componentes) {
@@ -314,10 +314,17 @@ public class Diagrama {
                 if(noEnlazadosArriba[j]!=null && noEnlazadosAbajo[i]!= 
                         noEnlazadosArriba[j] && 
                         noEnlazadosAbajo[i].intersectaConectorBajo(noEnlazadosArriba[j])){
+                    if(noEnlazadosAbajo[i] instanceof ComponenteContenedor){
+                        if(bufferParesAEnlazar[i][0]!=null && bufferParesAEnlazar[i][1]!=null){
+                            boolean cont=((ComponenteContenedor)bufferParesAEnlazar[i][0]).addComponente(bufferParesAEnlazar[i][1]);
+                            if(cont)//si se agrego al contenedor ya no se enlaza por abajo
+                                continue;
+                        }
+                    }
                     noEnlazadosAbajo[i].setSiguiente(noEnlazadosArriba[j]);
                     noEnlazadosArriba[j].setAnterior(noEnlazadosAbajo[i]);
                     noEnlazadosArriba[j]=null;
-                    break;
+                    //break;//no creo que esto se necesite
                 }
             }
         }
@@ -354,5 +361,130 @@ public class Diagrama {
      */
     public void setCompFinal(Fin compFinal) {
         this.compFinal = compFinal;
+    }
+    /**
+     * Devuelve una representacion de String de todo el diagrama.
+     * @return 
+     */
+    public String guardarDiagrama(){
+        StringBuilder datos= new StringBuilder();
+        for (int i = 0; i < componentes.size(); i++) {
+            Componente aux=componentes.get(i);
+            if(aux instanceof Inicio){
+                datos.append("INICIO");
+            }else if(aux instanceof Codigo){
+                datos.append("CODIGO");
+            }else if(aux instanceof Lectura){
+                datos.append("LECTURA");
+            }else if(aux instanceof Imprimir){
+                datos.append("IMPRIMIR");
+            }else if(aux instanceof Si){
+                datos.append("SI");
+            }else if(aux instanceof Hacermientras){
+                datos.append("HACERM");
+            }else if(aux instanceof Fin){
+                datos.append("FIN");
+            }
+            String delimitador="\\$";
+            datos.append(delimitador); // \$ es el delimitador
+            datos.append(aux.getX()).append(delimitador); //posicion en x
+            datos.append(aux.getY()).append(delimitador); //posicion en y
+            if(aux.getCodigoInterior()!=null)
+                datos.append(aux.getCodigoInterior()).append(delimitador);//codigo interior
+            else datos.append(delimitador);
+            datos.append(getIndex(aux.getSiguiente())).append(delimitador);  //la posicion del componente siguiente en el arreglo
+            datos.append(getIndex(aux.getAnterior()));  //la posicion del componente anterior en el arreglo
+            
+            System.out.print(aux.getCodigoInterior()+" anterior: " + aux.getAnterior()+" ");
+            if(aux.getAnterior()!=null){
+                System.out.println(aux.getAnterior().getCodigoInterior());
+                if(estaEnContenedor(aux)==0){ //los que esten en un contenedor tendran un campo extra en el registro
+                    System.out.println("Esta en contenedor, se agregara un registro extra ");
+                    ComponenteContenedor a=(ComponenteContenedor)(aux.getAnterior());
+                    datos.append(delimitador).append(a.enQueConectorEsta(aux)); //con que conector se conecto en el contenedor
+                }
+            }
+            datos.append("\\%fin\n");
+        }
+        return datos.toString();
+    }
+    /**
+     * Busca el componente c en el arreglo de componentes y devuelve su posicion
+     * en el arreglo o su "index", si no se encuentra devuelve -1.
+     * @param c el componente a buscar.
+     * @return el indice en donde se encontro.
+     */
+    public int getIndex(Componente c){
+        for (int i = 0; i < componentes.size(); i++) {
+            if(componentes.get(i)==c)return i;
+        }
+        return -1;
+    }
+    public boolean crearDiagrama(String codigo){
+        String registros[]= codigo.split("\\\\%fin\n"); //los delimitadores pueden dar error si el usuario los escribe
+        int enlazes[][]=new int[registros.length][3];
+        String items[];
+        int x,y, sig,ant;
+        ArrayList<Componente> nuevos= new ArrayList<>();
+        try{
+            for (int i = 0; i < registros.length; i++) {
+                items= registros[i].split("\\\\\\$");
+                x=Integer.parseInt(items[1]);
+                y=Integer.parseInt(items[2]);
+                sig=Integer.parseInt(items[4]);
+                ant=Integer.parseInt(items[5]);
+                
+                Componente c=null;
+                enlazes[i][0]=sig;
+                enlazes[i][1]=ant;
+                if(items.length>=7)
+                    enlazes[i][2]=Integer.parseInt(items[6]);
+                else enlazes[i][2]=-1;
+                if(items[0].equals("INICIO")){
+                    c= new Inicio(x,y);
+                    c.setCodigoInterior(items[3]);
+                    compInicial=(Inicio)c;
+                }else if(items[0].equals("CODIGO")){
+                    c= new Codigo(x,y);
+                    c.setCodigoInterior(items[3]);
+                }else if(items[0].equals("LECTURA")){
+                    c= new Lectura(x,y);
+                    c.setCodigoInterior(items[3]);
+                }else if(items[0].equals("IMPRIMIR")){
+                    c= new Imprimir(x,y);
+                    c.setCodigoInterior(items[3]);
+                }else if(items[0].equals("SI")){
+                    c= new Si(x,y);
+                    c.setCodigoInterior(items[3]);
+                }else if(items[0].equals("HACERM")){
+                    c= new Hacermientras(x,y);
+                    c.setCodigoInterior(items[3]);
+                }else if(items[0].equals("FIN")){
+                    c= new Fin(x,y);
+                    c.setCodigoInterior(items[3]);
+                    compFinal=(Fin)c; //esto no creo que sirva cuando si se extiende a soportar funciones
+                }
+                nuevos.add(c);
+            }
+            for (int i = 0; i < registros.length; i++) {
+                if(enlazes[i][0]!=-1)
+                    nuevos.get(i).setSiguiente(nuevos.get(enlazes[i][0]));
+                if(enlazes[i][2]!=-1){
+                    ComponenteContenedor cc=(ComponenteContenedor)nuevos.get(enlazes[i][1]);
+                    cc.addComponenteInterior(nuevos.get(i), enlazes[i][2]);
+                }else if(enlazes[i][1]!=-1)
+                    nuevos.get(i).setAnterior(nuevos.get(enlazes[i][1]));
+            }
+        }catch(IndexOutOfBoundsException ex){
+            System.out.println("El archivo esta corrompido, se salio del indice: " + ex.getMessage());
+            return false;
+        }catch(NumberFormatException e){
+            System.out.println("El archivo esta corrompido, error de formato: " + e.getMessage());
+            return false;
+        }
+        componentes.clear();
+        componentes=nuevos;
+        reacomodaTodos();
+        return true;
     }
 }

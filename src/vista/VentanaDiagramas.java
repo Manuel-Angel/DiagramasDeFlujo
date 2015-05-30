@@ -38,6 +38,10 @@ public class VentanaDiagramas extends javax.swing.JFrame {
         reacomoda.addActionListener(o);
         seleccionaTodos.addActionListener(o);
         compilar.addActionListener(o);
+        imprimir.addActionListener(o);
+        abrir.addActionListener(o);
+        guardar.addActionListener(o);
+        guardarComo.addActionListener(o);
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -58,6 +62,9 @@ public class VentanaDiagramas extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         archivo = new javax.swing.JMenu();
+        abrir = new javax.swing.JMenuItem();
+        guardar = new javax.swing.JMenuItem();
+        guardarComo = new javax.swing.JMenuItem();
         compilar = new javax.swing.JMenuItem();
         salir = new javax.swing.JMenuItem();
         insertar = new javax.swing.JMenu();
@@ -65,6 +72,7 @@ public class VentanaDiagramas extends javax.swing.JFrame {
         codigo = new javax.swing.JMenuItem();
         lectura = new javax.swing.JMenuItem();
         si = new javax.swing.JMenuItem();
+        imprimir = new javax.swing.JMenuItem();
         hacermientras = new javax.swing.JMenuItem();
         mientras = new javax.swing.JMenuItem();
         ciclo = new javax.swing.JMenuItem();
@@ -98,6 +106,15 @@ public class VentanaDiagramas extends javax.swing.JFrame {
 
         archivo.setText("Archivo");
 
+        abrir.setText("Abrir");
+        archivo.add(abrir);
+
+        guardar.setText("Guardar");
+        archivo.add(guardar);
+
+        guardarComo.setText("Guardar como");
+        archivo.add(guardarComo);
+
         compilar.setText("Compilar");
         archivo.add(compilar);
 
@@ -124,6 +141,9 @@ public class VentanaDiagramas extends javax.swing.JFrame {
 
         si.setText("Si");
         insertar.add(si);
+
+        imprimir.setText("Imprimir");
+        insertar.add(imprimir);
 
         hacermientras.setText("Hacermientras");
         insertar.add(hacermientras);
@@ -194,13 +214,17 @@ public class VentanaDiagramas extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem abrir;
     private javax.swing.JMenu archivo;
     private javax.swing.JMenuItem ciclo;
     private javax.swing.JMenuItem codigo;
     private javax.swing.JMenuItem compilar;
     private javax.swing.JMenu editar;
     private javax.swing.JMenuItem fin;
+    private javax.swing.JMenuItem guardar;
+    private javax.swing.JMenuItem guardarComo;
     private javax.swing.JMenuItem hacermientras;
+    private javax.swing.JMenuItem imprimir;
     private javax.swing.JMenuItem inicio;
     private javax.swing.JMenu insertar;
     private javax.swing.JLabel jLabel1;
