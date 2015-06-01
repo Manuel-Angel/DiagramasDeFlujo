@@ -12,7 +12,7 @@ import modelos.Componente;
 import modelos.Diagrama;
 import vista.PanelDiagrama;
 import vista.FormularioCodigo;
-
+import vista.Muestracodigo;
 /**
  *
  * @author Manuel Angel Muñoz S
@@ -35,6 +35,7 @@ public class OyentePanel extends MouseAdapter {
     private boolean selecciono;
     private int ux, uy;
     FormularioCodigo formulario;
+    Muestracodigo codigo1;
     public OyentePanel(Diagrama d, PanelDiagrama pane){
         diagrama=d;
         panel=pane;
@@ -42,6 +43,7 @@ public class OyentePanel extends MouseAdapter {
         panel.addMouseListener(this);
         panel.addMouseWheelListener(this);
         formulario = new FormularioCodigo();
+        codigo1 = new Muestracodigo();
     }
     
     @Override

@@ -42,6 +42,7 @@ public class VentanaDiagramas extends javax.swing.JFrame {
         abrir.addActionListener(o);
         guardar.addActionListener(o);
         guardarComo.addActionListener(o);
+        codigo1.addActionListener(o);
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -59,13 +60,28 @@ public class VentanaDiagramas extends javax.swing.JFrame {
         jMenu3 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
         jLabel1 = new javax.swing.JLabel();
+        jMenu4 = new javax.swing.JMenu();
+        jMenuBar2 = new javax.swing.JMenuBar();
+        jMenu5 = new javax.swing.JMenu();
+        jMenu6 = new javax.swing.JMenu();
+        jMenuBar3 = new javax.swing.JMenuBar();
+        jMenu7 = new javax.swing.JMenu();
+        jMenu8 = new javax.swing.JMenu();
+        jMenuBar4 = new javax.swing.JMenuBar();
+        jMenu9 = new javax.swing.JMenu();
+        jMenu10 = new javax.swing.JMenu();
+        jMenuBar5 = new javax.swing.JMenuBar();
+        jMenu12 = new javax.swing.JMenu();
+        jMenu13 = new javax.swing.JMenu();
+        jFrame1 = new javax.swing.JFrame();
+        jFrame2 = new javax.swing.JFrame();
+        jFrame3 = new javax.swing.JFrame();
         jLabel2 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         archivo = new javax.swing.JMenu();
         abrir = new javax.swing.JMenuItem();
         guardar = new javax.swing.JMenuItem();
         guardarComo = new javax.swing.JMenuItem();
-        compilar = new javax.swing.JMenuItem();
         salir = new javax.swing.JMenuItem();
         insertar = new javax.swing.JMenu();
         inicio = new javax.swing.JMenuItem();
@@ -80,6 +96,9 @@ public class VentanaDiagramas extends javax.swing.JFrame {
         editar = new javax.swing.JMenu();
         reacomoda = new javax.swing.JMenuItem();
         seleccionaTodos = new javax.swing.JMenuItem();
+        run = new javax.swing.JMenu();
+        compilar = new javax.swing.JMenuItem();
+        codigo1 = new javax.swing.JMenuItem();
 
         jMenuItem1.setText("jMenuItem1");
 
@@ -94,6 +113,32 @@ public class VentanaDiagramas extends javax.swing.JFrame {
         jMenuItem3.setText("jMenuItem3");
 
         jLabel1.setText("jLabel1");
+
+        jMenu4.setText("jMenu4");
+
+        jMenu5.setText("File");
+        jMenuBar2.add(jMenu5);
+
+        jMenu6.setText("Edit");
+        jMenuBar2.add(jMenu6);
+
+        jMenu7.setText("File");
+        jMenuBar3.add(jMenu7);
+
+        jMenu8.setText("Edit");
+        jMenuBar3.add(jMenu8);
+
+        jMenu9.setText("File");
+        jMenuBar4.add(jMenu9);
+
+        jMenu10.setText("Edit");
+        jMenuBar4.add(jMenu10);
+
+        jMenu12.setText("File");
+        jMenuBar5.add(jMenu12);
+
+        jMenu13.setText("Edit");
+        jMenuBar5.add(jMenu13);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -113,10 +158,12 @@ public class VentanaDiagramas extends javax.swing.JFrame {
         archivo.add(guardar);
 
         guardarComo.setText("Guardar como");
+        guardarComo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                guardarComoActionPerformed(evt);
+            }
+        });
         archivo.add(guardarComo);
-
-        compilar.setText("Compilar");
-        archivo.add(compilar);
 
         salir.setText("Salir");
         archivo.add(salir);
@@ -169,6 +216,21 @@ public class VentanaDiagramas extends javax.swing.JFrame {
 
         jMenuBar1.add(editar);
 
+        run.setText("Run");
+
+        compilar.setText("Compilar");
+        run.add(compilar);
+
+        codigo1.setText("Convertidor");
+        codigo1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                codigo1ActionPerformed(evt);
+            }
+        });
+        run.add(codigo1);
+
+        jMenuBar1.add(run);
+
         setJMenuBar(jMenuBar1);
 
         pack();
@@ -177,6 +239,17 @@ public class VentanaDiagramas extends javax.swing.JFrame {
     private void codigoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_codigoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_codigoActionPerformed
+
+    private void codigo1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_codigo1ActionPerformed
+        // TODO add your handling code here:
+          new Muestracodigo().setVisible(true); 
+        
+        
+    }//GEN-LAST:event_codigo1ActionPerformed
+
+    private void guardarComoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarComoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_guardarComoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -218,6 +291,7 @@ public class VentanaDiagramas extends javax.swing.JFrame {
     private javax.swing.JMenu archivo;
     private javax.swing.JMenuItem ciclo;
     private javax.swing.JMenuItem codigo;
+    private javax.swing.JMenuItem codigo1;
     private javax.swing.JMenuItem compilar;
     private javax.swing.JMenu editar;
     private javax.swing.JMenuItem fin;
@@ -227,18 +301,35 @@ public class VentanaDiagramas extends javax.swing.JFrame {
     private javax.swing.JMenuItem imprimir;
     private javax.swing.JMenuItem inicio;
     private javax.swing.JMenu insertar;
+    private javax.swing.JFrame jFrame1;
+    private javax.swing.JFrame jFrame2;
+    private javax.swing.JFrame jFrame3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu10;
+    private javax.swing.JMenu jMenu12;
+    private javax.swing.JMenu jMenu13;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenu jMenu4;
+    private javax.swing.JMenu jMenu5;
+    private javax.swing.JMenu jMenu6;
+    private javax.swing.JMenu jMenu7;
+    private javax.swing.JMenu jMenu8;
+    private javax.swing.JMenu jMenu9;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuBar jMenuBar2;
+    private javax.swing.JMenuBar jMenuBar3;
+    private javax.swing.JMenuBar jMenuBar4;
+    private javax.swing.JMenuBar jMenuBar5;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem lectura;
     private javax.swing.JMenuItem mientras;
     private javax.swing.JMenuItem reacomoda;
+    private javax.swing.JMenu run;
     private javax.swing.JMenuItem salir;
     private javax.swing.JMenuItem seleccionaTodos;
     private javax.swing.JMenuItem si;

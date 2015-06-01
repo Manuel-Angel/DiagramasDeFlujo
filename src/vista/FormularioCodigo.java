@@ -125,9 +125,11 @@ public class FormularioCodigo extends javax.swing.JFrame {
         panel.repaint();
         System.out.println("Se escribio: " + getCodigoEscrito());
         this.setVisible(false);
+                
     }//GEN-LAST:event_aceptarActionPerformed
 
     private void borrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_borrarActionPerformed
+
         areaCodigo.setText("");
     }//GEN-LAST:event_borrarActionPerformed
 
