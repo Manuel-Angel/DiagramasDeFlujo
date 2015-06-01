@@ -102,7 +102,9 @@ public class OyenteMenu implements ActionListener {
             
         }else if(accion.equals("Convertidor")){
             Muestracodigo ventana=new Muestracodigo();
-            ventana.getConvertidor().setText(diagrama.getCompInicial().generarCodigo());
+            if(diagrama.getCompInicial()!=null)
+                ventana.getConvertidor().setText(diagrama.getCompInicial().generarCodigo());
+            else ventana.getConvertidor().setText("No hay componente inicio");
             ventana.setVisible(true); 
         }
         panel.repaint();
