@@ -69,3 +69,5 @@ a,pi, contador, letra
 
 cuando se compile se cambiara eso por esto:
 scanf("%d%f%d%c", &a, &pi,&contador,&letra);
+
+probando el repositorio
