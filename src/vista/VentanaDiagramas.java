@@ -242,7 +242,7 @@ public class VentanaDiagramas extends javax.swing.JFrame {
 
     private void codigo1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_codigo1ActionPerformed
         // TODO add your handling code here:
-          new Muestracodigo().setVisible(true); 
+          //new Muestracodigo().setVisible(true); 
         
         
     }//GEN-LAST:event_codigo1ActionPerformed

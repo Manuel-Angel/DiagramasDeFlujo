@@ -152,4 +152,18 @@ public class Muestracodigo extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton limpiar;
     // End of variables declaration//GEN-END:variables
+
+    /**
+     * @return the convertidor
+     */
+    public javax.swing.JTextArea getConvertidor() {
+        return convertidor;
+    }
+
+    /**
+     * @param convertidor the convertidor to set
+     */
+    public void setConvertidor(javax.swing.JTextArea convertidor) {
+        this.convertidor = convertidor;
+    }
 }

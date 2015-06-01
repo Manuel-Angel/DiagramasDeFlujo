@@ -17,6 +17,7 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import modelos.*;
+import vista.Muestracodigo;
 import vista.PanelDiagrama;
 
 /**
@@ -99,6 +100,10 @@ public class OyenteMenu implements ActionListener {
             guardarArchivo();
         }else if(accion.equals("Guardar como")){
             
+        }else if(accion.equals("Convertidor")){
+            Muestracodigo ventana=new Muestracodigo();
+            ventana.getConvertidor().setText(diagrama.getCompInicial().generarCodigo());
+            ventana.setVisible(true); 
         }
         panel.repaint();
     }
