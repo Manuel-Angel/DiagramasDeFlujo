@@ -1,0 +1,217 @@
+options{
+    STATIC = false;
+}
+
+
+PARSER_BEGIN(Compilador)
+package modelos.compilador;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.HashSet;
+
+public class Compilador{
+
+	public static void main (String args [] ) throws FileNotFoundException{
+		String archivo="ejemplo.txt"; // cuando se requiera otro archivo, hay que pedir el nombre y se guarda aqui
+		Reader r=new InputStreamReader(new FileInputStream(archivo));
+        Compilador compilador = new Compilador(r); //en vez de System.in le pasamos un archivo
+        try{
+            compilador.analisisLexico();
+        }catch(ParseException ex){
+            System.out.println(ex.getMessage());
+        }
+                        ArrayList<Token> tokens= compilador.token_source.tablaTok;
+        System.out.println("\nTokens encontrados: ");
+        for (Token token : tokens) {
+            System.out.printf("Tipo de token: %-12s token: %s\n", CompiladorConstants.tokenImage[token.kind],token);
+        }
+	}
+}
+PARSER_END(Compilador)
+
+TOKEN_MGR_DECLS : {
+    public ArrayList<Token> tablaTok = new ArrayList();
+	public HashSet<Token> variables= new HashSet();
+}
+TOKEN:
+{       //TIPO DE DATOS
+
+		<entero: "entero">{
+			//System.out.println("Token: Tipo de Dato " + image);
+			tablaTok.add(matchedToken);
+		}
+		|<flotante: "flotante">{
+			//System.out.println("Token: Tipo de Dato " + image);
+			tablaTok.add(matchedToken);
+		}
+		|<doble: "doble">{
+			//System.out.println("Token: Tipo de Dato " + image);
+			tablaTok.add(matchedToken);
+		}
+		|<caracter: "caracter">{
+			//System.out.println("Token: Tipo de Dato " + image);
+			tablaTok.add(matchedToken);
+		}
+		|<largo: "largo">{
+			//System.out.println("Token: Tipo de Dato " + image);
+			tablaTok.add(matchedToken);
+		}
+		//operadores
+		
+		|<OP_SUMA: "+">{
+			//System.out.println("Token: Operador de suma " + image);
+			tablaTok.add(matchedToken);
+		}
+		|<OP_RESTA:"-">{
+			//System.out.println("Token: Operador de resta " + image);
+			tablaTok.add(matchedToken);
+		}
+		|<NUMERO:   (["0"-"9"])+ >{
+			//System.out.println("Token: numero entero  " + image);
+			tablaTok.add(matchedToken);
+		}
+		|<NUM_DEC: <NUMERO>"."(<NUMERO>)? >{
+			//System.out.println("Token: NumeroDecimal  " + image);
+			tablaTok.add(matchedToken);
+		}
+		|<MODULO: "%" >{
+			//System.out.println("Token: NumeroDecimal  " + image);
+			tablaTok.add(matchedToken);
+		}
+		|<IGUAL:"=">{
+			//System.out.println("Token: IGUAL " + image);
+			tablaTok.add(matchedToken);
+		}
+		|<POR:"*">{
+			//System.out.println("Token: POR " + image);
+			tablaTok.add(matchedToken);
+		}
+		|<ENTRE:"/">{
+			//System.out.println("Token: ENTRE " + image);
+			tablaTok.add(matchedToken);
+		}
+		|<FIN:";">{
+			//System.out.println("Token: FIN " + image);
+			tablaTok.add(matchedToken);
+		}
+		
+		|<MENOR:"<">{
+			//System.out.println("Token: FIN " + image);
+			tablaTok.add(matchedToken);
+		}
+		|<MAYOR:">">{
+			//System.out.println("Token: FIN " + image);
+			tablaTok.add(matchedToken);
+		}
+		|<ABRE:"(">{
+			//System.out.println("Token: FIN " + image);
+			tablaTok.add(matchedToken);
+		}
+		|<CIERRA:")">{
+			//System.out.println("Token: FIN " + image);
+			tablaTok.add(matchedToken);
+		}
+		|<COMA: ",">{
+			//System.out.println("Token: FIN " + image);
+			tablaTok.add(matchedToken);
+		}
+		|<COMILLA: "\"">{
+			tablaTok.add(matchedToken);
+		}
+		|<CORCH_ABRE: "[">{
+			tablaTok.add(matchedToken);
+		}
+		|<CORCH_CIER: "]">{
+			tablaTok.add(matchedToken);
+		}
+		|<LETRA:(["a"-"z"]|["A"-"Z"])>{
+			//System.out.println("Token: LETRA" + image);
+			tablaTok.add(matchedToken);
+		}
+		|<CARAC_ESP: ("!"|"\""| ["#"-"/"] | ":" | ";" |"@" |"?")>{
+			tablaTok.add(matchedToken);
+		}
+		|<VARIABLE:<LETRA>(<LETRA> | <NUMERO> | "_")*   >{
+			//System.out.println("Token: VARIABLE " + image);
+			tablaTok.add(matchedToken);
+			variables.add(matchedToken);
+		}
+}
+
+
+SKIP : {
+    " "
+    |"\r" 
+    |"\t" 
+    |"\n" 
+}
+
+void analisisLexico():
+{
+	
+	System.out.println("inicio");
+	//ArrayList<String> comp = new ArrayList();
+}
+{   //TIPO DE DATOS
+    ( <entero> {   }
+	|<flotante> {  }
+	|<doble> {  }
+	|<caracter> {  }
+	|<largo> {  }	
+	
+	//operadores aritmeticos
+	|<OP_RESTA> {   } 
+	| <OP_SUMA> {   } 
+	| <NUMERO> {   } 
+	| <NUM_DEC> {   } 
+	| <MODULO>
+	| <POR> {   } 
+	| <ENTRE> {   } 
+	
+	//operadores de comparacion
+	| <MENOR>
+	| <MAYOR>
+	| <IGUAL> {   } 
+	
+	| <LETRA> {   } 
+	| <CARAC_ESP>
+	| <VARIABLE> //{ compilacion.add(token.image.toString());  } 
+	| <FIN>{ } 
+	| <ABRE>
+	| <CIERRA>
+	)* 
+	<EOF> //siempre va a terminar al final del archivo, si no, no termina
+	//| <FIN> {compilacion.add(token.image.toString()); 
+		//return compilacion;
+	//} )
+}
+
+void tipoDeDato():
+{ }
+{
+	<entero> {   }
+	|<flotante> {  }
+	|<doble> {  }
+	|<caracter> {  }
+	|<largo> { }
+}
+void constantes():
+{ }
+{
+	<NUMERO>
+	|<NUM_DEC>
+	|<COMILLA>(<LETRA> | <CARAC_ESP>)<COMILLA>
+}
+void declaracionesGlobales():
+{
+	Token t;
+}
+{
+		(tipoDeDato()(<VARIABLE>|t=<LETRA>{ token_source.variables.add(t); })
+		(<CORCH_ABRE><NUMERO><CORCH_CIER>)?(<IGUAL>constantes())?(<COMA><VARIABLE>)*<FIN>
+		)*
+}

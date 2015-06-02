@@ -1,0 +1,5 @@
+entero x=3;
+flotante y=3.141592653589;
+
+doble z= x*y/10;
+
