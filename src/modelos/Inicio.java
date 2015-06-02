@@ -11,7 +11,21 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import modelos.compilador.Compilador;
+import modelos.compilador.CompiladorConstants;
+import modelos.compilador.ParseException;
+import modelos.compilador.Token;
 
 /**
  *
@@ -50,6 +64,8 @@ public class Inicio implements Componente {
     */
     private Componente siguiente=null;
     private String codigoInterior;
+    private Compilador compilador;
+    ArrayList<String> mensajes;
     public Inicio(int x, int y){
         this.x=x;
         this.y=y;
@@ -90,6 +106,15 @@ public class Inicio implements Componente {
             g.drawString(aux, x+10, y+alto/4+10+linea*metrics.getHeight());
             linea++;
         }
+        int alt=metrics.getHeight()+2;
+        if(mensajes!=null && mensajes.size()>0 && selected){
+            for (int i = 0; i < mensajes.size(); i++) {
+                g.setColor(Color.YELLOW);
+                g.fillRect(x+50, y+alt*i+2, metrics.stringWidth(mensajes.get(i)), alt);
+                g.setColor(Color.BLACK);
+                g.drawString(mensajes.get(i), x+50, y+alt+alt*i);
+            }
+        }
     }
     public String recortarCadena(FontMetrics fm, String codigo){
         int i=10;
@@ -114,8 +139,42 @@ public class Inicio implements Componente {
     @Override
     public String generarCodigo() {
         StringBuilder codigoCompleto= new StringBuilder("#include<stdio.h>\n");
-        if(codigoInterior!=null)
-            codigoCompleto.append(codigoInterior);//contendra las declaraciones de variables globales
+        try {
+            if(codigoInterior!=null){
+                //codigoCompleto.append(codigoInterior);//contendra las declaraciones de variables globales
+                FileWriter save = new FileWriter("codigo.temp");
+                save.write(codigoInterior);
+                save.close();
+                if(compilador==null){
+                    Reader r;
+                    r = new InputStreamReader(new FileInputStream("codigo.temp"));
+                    compilador = new Compilador(r); //en vez de System.in le pasamos un archivo
+                }else compilador.ReInit(new InputStreamReader(new FileInputStream("codigo.temp")));
+                compilador.declaracionesGlobales();
+                ArrayList<Token> tokens= compilador.token_source.tablaTok;
+                mensajes= compilador.mensajes;
+                if(mensajes!=null && mensajes.size()>0)selected=true;
+                for (Token token : tokens) {
+                    switch(token.kind){
+                        case CompiladorConstants.entero: codigoCompleto.append("int "); break;
+                        case CompiladorConstants.flotante: codigoCompleto.append("float "); break;
+                        case CompiladorConstants.doble: codigoCompleto.append("double "); break;
+                        case CompiladorConstants.caracter: codigoCompleto.append("char "); break;
+                        case CompiladorConstants.largo: codigoCompleto.append("long long int "); break;
+                        case CompiladorConstants.FIN: codigoCompleto.append(";").append('\n'); break;
+                        default : codigoCompleto.append(token.image).append(" ");
+                    }
+                }
+                //File temp= new File("codigo.temp");
+                //temp.delete();
+            }
+        } catch (FileNotFoundException ex) {
+            
+        } catch (IOException e){
+            
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+        }
         codigoCompleto.append("\nint main(){\n");
         Componente aux=siguiente;
         String cod;

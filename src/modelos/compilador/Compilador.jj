@@ -11,31 +11,43 @@ import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeMap;
 
 public class Compilador{
-
+	public ArrayList<String> mensajes= new ArrayList();
 	public static void main (String args [] ) throws FileNotFoundException{
 		String archivo="ejemplo.txt"; // cuando se requiera otro archivo, hay que pedir el nombre y se guarda aqui
 		Reader r=new InputStreamReader(new FileInputStream(archivo));
-        Compilador compilador = new Compilador(r); //en vez de System.in le pasamos un archivo
-        try{
-            compilador.analisisLexico();
-        }catch(ParseException ex){
-            System.out.println(ex.getMessage());
-        }
-                        ArrayList<Token> tokens= compilador.token_source.tablaTok;
-        System.out.println("\nTokens encontrados: ");
-        for (Token token : tokens) {
-            System.out.printf("Tipo de token: %-12s token: %s\n", CompiladorConstants.tokenImage[token.kind],token);
-        }
+		Compilador compilador = new Compilador(r); //en vez de System.in le pasamos un archivo
+		try{
+			//compilador.analisisLexico();
+			compilador.declaracionesGlobales();
+		}catch(ParseException ex){
+			System.out.println(ex.getMessage());
+		}
+		ArrayList<Token> tokens= compilador.token_source.tablaTok;
+		TreeMap<Token,Token> v=compilador.token_source.variables;
+		System.out.println("\nTokens encontrados: ");
+		for (Token token : tokens) {
+			System.out.printf("Tipo de token: %-12s token: %s\n", CompiladorConstants.tokenImage[token.kind],token);
+		}
+		System.out.println("Variables: ");
+		Set variables=v.keySet();
+		for (Object variable : variables) {
+			System.out.printf("Nombre: %-12s tipo: %s\n",variable,CompiladorConstants.tokenImage[v.get(variable).kind]);
+		}
+		System.out.println("Mensajes: ");
+		for (int i = 0; i < compilador.mensajes.size(); i++)
+			System.out.println(compilador.mensajes.get(i));
+
 	}
 }
 PARSER_END(Compilador)
 
 TOKEN_MGR_DECLS : {
     public ArrayList<Token> tablaTok = new ArrayList();
-	public HashSet<Token> variables= new HashSet();
+	public TreeMap<Token,Token> variables= new TreeMap();
 }
 TOKEN:
 {       //TIPO DE DATOS
@@ -138,7 +150,6 @@ TOKEN:
 		|<VARIABLE:<LETRA>(<LETRA> | <NUMERO> | "_")*   >{
 			//System.out.println("Token: VARIABLE " + image);
 			tablaTok.add(matchedToken);
-			variables.add(matchedToken);
 		}
 }
 
@@ -190,14 +201,16 @@ void analisisLexico():
 	//} )
 }
 
-void tipoDeDato():
-{ }
+Token tipoDeDato():
 {
-	<entero> {   }
-	|<flotante> {  }
-	|<doble> {  }
-	|<caracter> {  }
-	|<largo> { }
+	Token t;
+}
+{
+	t=<entero> {return t;}
+	|t=<flotante> {return t;}
+	|t=<doble> {return t;}
+	|t=<caracter> {return t;}
+	|t=<largo> {return t;}
 }
 void constantes():
 { }
@@ -208,10 +221,50 @@ void constantes():
 }
 void declaracionesGlobales():
 {
-	Token t;
+	Token t,tipo;
+	//System.out.println("mensajes: "+mensajes.size() + " tabla: " + token_source.tablaTok.size() + " variables: "+token_source.variables.size());
+	mensajes.clear();
+	token_source.tablaTok.clear();
+	token_source.variables.clear();
+	//System.out.println("mensajes: "+mensajes.size() + " tabla: " + token_source.tablaTok.size() + " variables: "+token_source.variables.size());
 }
 {
-		(tipoDeDato()(<VARIABLE>|t=<LETRA>{ token_source.variables.add(t); })
-		(<CORCH_ABRE><NUMERO><CORCH_CIER>)?(<IGUAL>constantes())?(<COMA><VARIABLE>)*<FIN>
-		)*
+	try{
+	( 
+			tipo=tipoDeDato()
+			(t=<VARIABLE>|t=<LETRA>){ 
+				if(token_source.variables.get(t)==null)
+					token_source.variables.put(t,tipo);
+				else mensajes.add("La variable " + t.image +" (linea:"+t.beginLine+" columna:" +t.beginColumn+")" +"ya ha sido declarada antes.");
+			}
+			(<CORCH_ABRE><NUMERO><CORCH_CIER>)?(<IGUAL>constantes())?
+			(<COMA>(<VARIABLE>|t=<LETRA>{
+				if(token_source.variables.get(t)==null)
+					token_source.variables.put(t,tipo); 
+				else mensajes.add("La variable " + t.image +" (linea:"+t.beginLine+" columna:" +t.beginColumn+")" +"ya ha sido declarada antes.");
+				})
+				(<CORCH_ABRE><NUMERO><CORCH_CIER>)?(<IGUAL>constantes())?
+			)*
+			<FIN>
+	
+	)* 
+	}catch(ParseException ex){
+		System.out.println("que pedo " + ex);
+		mensajes.add("Error sintactico: " +ex);
+	}catch (TokenMgrError te){
+		//do{
+			//System.out.println("error lexico, caracter incorrecto: "+t.image+" en "+t.beginLine+" columna:"+t.beginColumn);
+		//} while (t.kind!=EOL && t.kind !=EOF  );
+	   //throw new ParseException("error lexico, caracter incorrecto: "+t.image+" en "+t.beginLine+" columna:"+t.beginColumn+" ocurrio en element");
+	   mensajes.add("Error lexico: "+ te.getMessage());
+	}
+	{
+		int ult=token_source.tablaTok.size()-1,i;
+		for(i=ult;i>=0 && !token_source.tablaTok.get(i).image.equals(";");i--);
+
+		if(i!=ult){
+			Token er=token_source.tablaTok.get(i+1);
+			mensajes.add("Error sintactico en token: "+ er +" en lina "+er.beginLine +" columna: "+er.beginColumn);
+		}
+	}
 }

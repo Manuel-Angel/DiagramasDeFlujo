@@ -6,7 +6,7 @@ package modelos.compilador;
  * Describes the input token stream.
  */
 
-public class Token implements java.io.Serializable {
+public class Token implements java.io.Serializable, Comparable<Token> {
 
   /**
    * The version identifier for this Serializable class.
@@ -127,5 +127,9 @@ public class Token implements java.io.Serializable {
     return newToken(ofKind, null);
   }
 
+    @Override
+    public int compareTo(Token o) {
+        return image.compareTo(o.image);
+    }
 }
 /* JavaCC - OriginalChecksum=6d8d1a134dd304341a3bec47b9fffa38 (do not edit this line) */

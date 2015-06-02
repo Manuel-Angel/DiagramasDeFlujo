@@ -7,24 +7,36 @@ import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeMap;
 
 public class Compilador implements CompiladorConstants {
-
+        public ArrayList<String> mensajes= new ArrayList();
         public static void main (String args [] ) throws FileNotFoundException{
                 String archivo="ejemplo.txt"; // cuando se requiera otro archivo, hay que pedir el nombre y se guarda aqui
                 Reader r=new InputStreamReader(new FileInputStream(archivo));
-        Compilador compilador = new Compilador(r); //en vez de System.in le pasamos un archivo
-        try{
-            compilador.analisisLexico();
-        }catch(ParseException ex){
-            System.out.println(ex.getMessage());
-        }
-                        ArrayList<Token> tokens= compilador.token_source.tablaTok;
-        System.out.println("\u005cnTokens encontrados: ");
-        for (Token token : tokens) {
-            System.out.printf("Tipo de token: %-12s token: %s\u005cn", CompiladorConstants.tokenImage[token.kind],token);
-        }
+                Compilador compilador = new Compilador(r); //en vez de System.in le pasamos un archivo
+                try{
+                        //compilador.analisisLexico();
+                        compilador.declaracionesGlobales();
+                }catch(ParseException ex){
+                        System.out.println(ex.getMessage());
+                }
+                ArrayList<Token> tokens= compilador.token_source.tablaTok;
+                TreeMap<Token,Token> v=compilador.token_source.variables;
+                System.out.println("\u005cnTokens encontrados: ");
+                for (Token token : tokens) {
+                        System.out.printf("Tipo de token: %-12s token: %s\u005cn", CompiladorConstants.tokenImage[token.kind],token);
+                }
+                System.out.println("Variables: ");
+                Set variables=v.keySet();
+                for (Object variable : variables) {
+                        System.out.printf("Nombre: %-12s tipo: %s\u005cn",variable,CompiladorConstants.tokenImage[v.get(variable).kind]);
+                }
+                System.out.println("Mensajes: ");
+                for (int i = 0; i < compilador.mensajes.size(); i++)
+                        System.out.println(compilador.mensajes.get(i));
+
         }
 
   final public void analisisLexico() throws ParseException {System.out.println("inicio");
@@ -169,31 +181,31 @@ public class Compilador implements CompiladorConstants {
     jj_consume_token(0);
   }
 
-  final public void tipoDeDato() throws ParseException {
+  final public Token tipoDeDato() throws ParseException {Token t;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case entero:{
-      jj_consume_token(entero);
-
+      t = jj_consume_token(entero);
+{if ("" != null) return t;}
       break;
       }
     case flotante:{
-      jj_consume_token(flotante);
-
+      t = jj_consume_token(flotante);
+{if ("" != null) return t;}
       break;
       }
     case doble:{
-      jj_consume_token(doble);
-
+      t = jj_consume_token(doble);
+{if ("" != null) return t;}
       break;
       }
     case caracter:{
-      jj_consume_token(caracter);
-
+      t = jj_consume_token(caracter);
+{if ("" != null) return t;}
       break;
       }
     case largo:{
-      jj_consume_token(largo);
-
+      t = jj_consume_token(largo);
+{if ("" != null) return t;}
       break;
       }
     default:
@@ -201,6 +213,7 @@ public class Compilador implements CompiladorConstants {
       jj_consume_token(-1);
       throw new ParseException();
     }
+    throw new Error("Missing return statement in function");
   }
 
   final public void constantes() throws ParseException {
@@ -239,75 +252,138 @@ public class Compilador implements CompiladorConstants {
     }
   }
 
-  final public void declaracionesGlobales() throws ParseException {Token t;
-    label_2:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case entero:
-      case flotante:
-      case doble:
-      case caracter:
-      case largo:{
-        ;
-        break;
-        }
-      default:
-        jj_la1[5] = jj_gen;
-        break label_2;
-      }
-      tipoDeDato();
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case VARIABLE:{
-        jj_consume_token(VARIABLE);
-        break;
-        }
-      case LETRA:{
-        t = jj_consume_token(LETRA);
-token_source.variables.add(t);
-        break;
-        }
-      default:
-        jj_la1[6] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case CORCH_ABRE:{
-        jj_consume_token(CORCH_ABRE);
-        jj_consume_token(NUMERO);
-        jj_consume_token(CORCH_CIER);
-        break;
-        }
-      default:
-        jj_la1[7] = jj_gen;
-        ;
-      }
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case IGUAL:{
-        jj_consume_token(IGUAL);
-        constantes();
-        break;
-        }
-      default:
-        jj_la1[8] = jj_gen;
-        ;
-      }
-      label_3:
+  final public void declaracionesGlobales() throws ParseException {Token t,tipo;
+        //System.out.println("mensajes: "+mensajes.size() + " tabla: " + token_source.tablaTok.size() + " variables: "+token_source.variables.size());
+        mensajes.clear();
+        token_source.tablaTok.clear();
+        token_source.variables.clear();
+        //System.out.println("mensajes: "+mensajes.size() + " tabla: " + token_source.tablaTok.size() + " variables: "+token_source.variables.size());
+
+    try {
+      label_2:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case COMA:{
+        case entero:
+        case flotante:
+        case doble:
+        case caracter:
+        case largo:{
           ;
           break;
           }
         default:
-          jj_la1[9] = jj_gen;
-          break label_3;
+          jj_la1[5] = jj_gen;
+          break label_2;
         }
-        jj_consume_token(COMA);
-        jj_consume_token(VARIABLE);
+        tipo = tipoDeDato();
+        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+        case VARIABLE:{
+          t = jj_consume_token(VARIABLE);
+          break;
+          }
+        case LETRA:{
+          t = jj_consume_token(LETRA);
+          break;
+          }
+        default:
+          jj_la1[6] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+if(token_source.variables.get(t)==null)
+                                        token_source.variables.put(t,tipo);
+                                else mensajes.add("La variable " + t.image +" (linea:"+t.beginLine+" columna:" +t.beginColumn+")" +"ya ha sido declarada antes.");
+        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+        case CORCH_ABRE:{
+          jj_consume_token(CORCH_ABRE);
+          jj_consume_token(NUMERO);
+          jj_consume_token(CORCH_CIER);
+          break;
+          }
+        default:
+          jj_la1[7] = jj_gen;
+          ;
+        }
+        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+        case IGUAL:{
+          jj_consume_token(IGUAL);
+          constantes();
+          break;
+          }
+        default:
+          jj_la1[8] = jj_gen;
+          ;
+        }
+        label_3:
+        while (true) {
+          switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+          case COMA:{
+            ;
+            break;
+            }
+          default:
+            jj_la1[9] = jj_gen;
+            break label_3;
+          }
+          jj_consume_token(COMA);
+          switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+          case VARIABLE:{
+            jj_consume_token(VARIABLE);
+            break;
+            }
+          case LETRA:{
+            t = jj_consume_token(LETRA);
+if(token_source.variables.get(t)==null)
+                                        token_source.variables.put(t,tipo);
+                                else mensajes.add("La variable " + t.image +" (linea:"+t.beginLine+" columna:" +t.beginColumn+")" +"ya ha sido declarada antes.");
+            break;
+            }
+          default:
+            jj_la1[10] = jj_gen;
+            jj_consume_token(-1);
+            throw new ParseException();
+          }
+          switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+          case CORCH_ABRE:{
+            jj_consume_token(CORCH_ABRE);
+            jj_consume_token(NUMERO);
+            jj_consume_token(CORCH_CIER);
+            break;
+            }
+          default:
+            jj_la1[11] = jj_gen;
+            ;
+          }
+          switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+          case IGUAL:{
+            jj_consume_token(IGUAL);
+            constantes();
+            break;
+            }
+          default:
+            jj_la1[12] = jj_gen;
+            ;
+          }
+        }
+        jj_consume_token(FIN);
       }
-      jj_consume_token(FIN);
+    } catch (ParseException ex) {
+System.out.println("que pedo " + ex);
+                mensajes.add("Error sintactico: " +ex);
+    } catch (TokenMgrError te) {
+//do{
+                        //System.out.println("error lexico, caracter incorrecto: "+t.image+" en "+t.beginLine+" columna:"+t.beginColumn);
+                //} while (t.kind!=EOL && t.kind !=EOF  );
+           //throw new ParseException("error lexico, caracter incorrecto: "+t.image+" en "+t.beginLine+" columna:"+t.beginColumn+" ocurrio en element");
+           mensajes.add("Error lexico: "+ te.getMessage());
     }
+int ult=token_source.tablaTok.size()-1,i;
+                for(i=ult;i>=0 && !token_source.tablaTok.get(i).image.equals(";");i--);
+
+                if(i!=ult){
+                        Token er=token_source.tablaTok.get(i+1);
+                        mensajes.add("Error sintactico en token: "+ er +" en lina "+er.beginLine +" columna: "+er.beginColumn);
+                }
   }
 
   /** Generated Token Manager. */
@@ -319,13 +395,13 @@ token_source.variables.add(t);
   public Token jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[10];
+  final private int[] jj_la1 = new int[13];
   static private int[] jj_la1_0;
   static {
       jj_la1_init_0();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x387fffe,0x387fffe,0x3e,0x1800000,0x100300,0x3e,0x2800000,0x200000,0x800,0x80000,};
+      jj_la1_0 = new int[] {0x387fffe,0x387fffe,0x3e,0x1800000,0x100300,0x3e,0x2800000,0x200000,0x800,0x80000,0x2800000,0x200000,0x800,};
    }
 
   /** Constructor with InputStream. */
@@ -339,7 +415,7 @@ token_source.variables.add(t);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 10; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 13; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -353,7 +429,7 @@ token_source.variables.add(t);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 10; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 13; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -363,7 +439,7 @@ token_source.variables.add(t);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 10; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 13; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -373,7 +449,7 @@ token_source.variables.add(t);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 10; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 13; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -382,7 +458,7 @@ token_source.variables.add(t);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 10; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 13; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -391,7 +467,7 @@ token_source.variables.add(t);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 10; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 13; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
@@ -447,7 +523,7 @@ token_source.variables.add(t);
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 13; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {

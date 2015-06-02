@@ -6,12 +6,13 @@ import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeMap;
 
 /** Token Manager. */
 @SuppressWarnings("unused")public class CompiladorTokenManager implements CompiladorConstants {
     public ArrayList<Token> tablaTok = new ArrayList();
-        public HashSet<Token> variables= new HashSet();
+        public TreeMap<Token,Token> variables= new TreeMap();
 
   /** Debug output. */
   public  java.io.PrintStream debugStream = System.out;
@@ -704,7 +705,6 @@ void TokenLexicalActions(Token matchedToken)
         image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
                         //System.out.println("Token: VARIABLE " + image);
                         tablaTok.add(matchedToken);
-                        variables.add(matchedToken);
          break;
       default :
          break;
