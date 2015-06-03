@@ -151,16 +151,25 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="abrir">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/imagenes/1433322955_document-open.png"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Abrir"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="guardar">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/imagenes/1433322985_system-floppy.png"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Guardar"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="guardarComo">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/imagenes/1433323810_document-save.png"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Guardar como"/>
               </Properties>
               <Events>
@@ -169,6 +178,9 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="salir">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/imagenes/1433323001_gtk-stop.png"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Salir"/>
               </Properties>
             </MenuItem>
@@ -236,11 +248,17 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="reacomoda">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/imagenes/1433323954_window_fullscreen.png"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Reacomoda"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="seleccionaTodos">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/imagenes/1433324020_edit-find-replace.png"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Selecciona todos"/>
               </Properties>
             </MenuItem>
@@ -253,11 +271,17 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="compilar">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/imagenes/1433324201_openterm.png"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Compilar"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="codigo1">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/imagenes/1433324027_gtk-refresh.png"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Convertidor"/>
               </Properties>
               <Events>
