@@ -6,6 +6,10 @@
 package vista;
 
 import controlador.OyenteMenu;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
 
 /**
  *
@@ -21,7 +25,7 @@ public class VentanaDiagramas extends javax.swing.JFrame {
         initComponents();
     }
     public VentanaDiagramas() {
-        initComponents();
+        initComponents();        
     }
     public void addEventos(OyenteMenu o){
         salir.addActionListener(o);
@@ -151,12 +155,15 @@ public class VentanaDiagramas extends javax.swing.JFrame {
 
         archivo.setText("Archivo");
 
+        abrir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/1433322955_document-open.png"))); // NOI18N
         abrir.setText("Abrir");
         archivo.add(abrir);
 
+        guardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/1433322985_system-floppy.png"))); // NOI18N
         guardar.setText("Guardar");
         archivo.add(guardar);
 
+        guardarComo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/1433323810_document-save.png"))); // NOI18N
         guardarComo.setText("Guardar como");
         guardarComo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -165,6 +172,7 @@ public class VentanaDiagramas extends javax.swing.JFrame {
         });
         archivo.add(guardarComo);
 
+        salir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/1433323001_gtk-stop.png"))); // NOI18N
         salir.setText("Salir");
         archivo.add(salir);
 
@@ -208,9 +216,11 @@ public class VentanaDiagramas extends javax.swing.JFrame {
 
         editar.setText("Editar");
 
+        reacomoda.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/1433323954_window_fullscreen.png"))); // NOI18N
         reacomoda.setText("Reacomoda");
         editar.add(reacomoda);
 
+        seleccionaTodos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/1433324020_edit-find-replace.png"))); // NOI18N
         seleccionaTodos.setText("Selecciona todos");
         editar.add(seleccionaTodos);
 
@@ -218,9 +228,11 @@ public class VentanaDiagramas extends javax.swing.JFrame {
 
         run.setText("Run");
 
+        compilar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/1433324201_openterm.png"))); // NOI18N
         compilar.setText("Compilar");
         run.add(compilar);
 
+        codigo1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/1433324027_gtk-refresh.png"))); // NOI18N
         codigo1.setText("Convertidor");
         codigo1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

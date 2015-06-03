@@ -6,6 +6,8 @@
 package vista;
 
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import modelos.Componente;
 
@@ -23,7 +25,12 @@ public class Muestracodigo extends javax.swing.JFrame {
     
     public Muestracodigo() {
         initComponents();
-        setIconImage(new ImageIcon(getClass().getResource("/imagenes/fondoC.jpg")).getImage());
+        ((JPanel)getContentPane()).setOpaque(false);
+        ImageIcon uno=new ImageIcon(this.getClass().getResource("/imagenes/pro.jpg"));
+        JLabel fondo = new JLabel();
+        fondo.setIcon(uno);
+        getLayeredPane().add(fondo,JLayeredPane.FRAME_CONTENT_LAYER);
+        fondo.setBounds(0,0,uno.getIconWidth(),uno.getIconHeight());
     }
     
     public void setComp (Componente comp){
@@ -55,6 +62,7 @@ public class Muestracodigo extends javax.swing.JFrame {
         jScrollPane1.setViewportView(convertidor);
 
         jLabel1.setFont(new java.awt.Font("Vani", 1, 14)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("CODIGO C, JAVA.");
 
         corregir.setText("Corregir");

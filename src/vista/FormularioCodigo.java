@@ -5,6 +5,9 @@
  */
 package vista;
 
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import modelos.Componente;
 
@@ -22,6 +25,13 @@ public class FormularioCodigo extends javax.swing.JFrame {
     
     public FormularioCodigo() {
         initComponents();
+        ((JPanel)getContentPane()).setOpaque(false);
+        ImageIcon uno=new ImageIcon(this.getClass().getResource("/imagenes/fondoC.jpg"));
+        JLabel fondo = new JLabel();
+        fondo.setIcon(uno);
+        getLayeredPane().add(fondo,JLayeredPane.FRAME_CONTENT_LAYER);
+        fondo.setBounds(0,0,uno.getIconWidth(),uno.getIconHeight());
+        
     }
     public void setComp(Componente comp){
         this.comp=comp;
@@ -48,6 +58,7 @@ public class FormularioCodigo extends javax.swing.JFrame {
         setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("INTRODUCIR COMANDOS");
 
         cancelar.setText("CANCELAR");
