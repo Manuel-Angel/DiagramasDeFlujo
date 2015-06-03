@@ -64,7 +64,7 @@ public class Compilador implements CompiladorConstants {
       case ABRE:
       case CIERRA:
       case LETRA:
-      case CARAC_ESP:
+      case CARACTER_LITERAL:
       case VARIABLE:{
         ;
         break;
@@ -151,8 +151,8 @@ public class Compilador implements CompiladorConstants {
 
         break;
         }
-      case CARAC_ESP:{
-        jj_consume_token(CARAC_ESP);
+      case CARACTER_LITERAL:{
+        jj_consume_token(CARACTER_LITERAL);
         break;
         }
       case VARIABLE:{
@@ -226,27 +226,12 @@ public class Compilador implements CompiladorConstants {
       jj_consume_token(NUM_DEC);
       break;
       }
-    case COMILLA:{
-      jj_consume_token(COMILLA);
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case LETRA:{
-        jj_consume_token(LETRA);
-        break;
-        }
-      case CARAC_ESP:{
-        jj_consume_token(CARAC_ESP);
-        break;
-        }
-      default:
-        jj_la1[3] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-      jj_consume_token(COMILLA);
+    case CARACTER_LITERAL:{
+      jj_consume_token(CARACTER_LITERAL);
       break;
       }
     default:
-      jj_la1[4] = jj_gen;
+      jj_la1[3] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -272,7 +257,7 @@ public class Compilador implements CompiladorConstants {
           break;
           }
         default:
-          jj_la1[5] = jj_gen;
+          jj_la1[4] = jj_gen;
           break label_2;
         }
         tipo = tipoDeDato();
@@ -286,7 +271,7 @@ public class Compilador implements CompiladorConstants {
           break;
           }
         default:
-          jj_la1[6] = jj_gen;
+          jj_la1[5] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -301,7 +286,7 @@ if(token_source.variables.get(t)==null)
           break;
           }
         default:
-          jj_la1[7] = jj_gen;
+          jj_la1[6] = jj_gen;
           ;
         }
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -311,7 +296,7 @@ if(token_source.variables.get(t)==null)
           break;
           }
         default:
-          jj_la1[8] = jj_gen;
+          jj_la1[7] = jj_gen;
           ;
         }
         label_3:
@@ -322,7 +307,7 @@ if(token_source.variables.get(t)==null)
             break;
             }
           default:
-            jj_la1[9] = jj_gen;
+            jj_la1[8] = jj_gen;
             break label_3;
           }
           jj_consume_token(COMA);
@@ -339,7 +324,7 @@ if(token_source.variables.get(t)==null)
             break;
             }
           default:
-            jj_la1[10] = jj_gen;
+            jj_la1[9] = jj_gen;
             jj_consume_token(-1);
             throw new ParseException();
           }
@@ -351,7 +336,7 @@ if(token_source.variables.get(t)==null)
             break;
             }
           default:
-            jj_la1[11] = jj_gen;
+            jj_la1[10] = jj_gen;
             ;
           }
           switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -361,7 +346,7 @@ if(token_source.variables.get(t)==null)
             break;
             }
           default:
-            jj_la1[12] = jj_gen;
+            jj_la1[11] = jj_gen;
             ;
           }
         }
@@ -395,13 +380,13 @@ int ult=token_source.tablaTok.size()-1,i;
   public Token jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[13];
+  final private int[] jj_la1 = new int[12];
   static private int[] jj_la1_0;
   static {
       jj_la1_init_0();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x387fffe,0x387fffe,0x3e,0x1800000,0x100300,0x3e,0x2800000,0x200000,0x800,0x80000,0x2800000,0x200000,0x800,};
+      jj_la1_0 = new int[] {0x387fffe0,0x387fffe0,0x3e0,0x10003000,0x3e0,0x28000000,0x2000000,0x8000,0x800000,0x28000000,0x2000000,0x8000,};
    }
 
   /** Constructor with InputStream. */
@@ -415,7 +400,7 @@ int ult=token_source.tablaTok.size()-1,i;
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 13; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 12; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -429,7 +414,7 @@ int ult=token_source.tablaTok.size()-1,i;
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 13; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 12; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -439,7 +424,7 @@ int ult=token_source.tablaTok.size()-1,i;
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 13; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 12; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -449,7 +434,7 @@ int ult=token_source.tablaTok.size()-1,i;
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 13; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 12; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -458,7 +443,7 @@ int ult=token_source.tablaTok.size()-1,i;
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 13; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 12; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -467,7 +452,7 @@ int ult=token_source.tablaTok.size()-1,i;
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 13; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 12; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
@@ -523,7 +508,7 @@ int ult=token_source.tablaTok.size()-1,i;
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 13; i++) {
+    for (int i = 0; i < 12; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {

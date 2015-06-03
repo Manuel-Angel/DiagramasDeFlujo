@@ -7,6 +7,7 @@ package diagramasdeflujo;
 
 import controlador.OyenteMenu;
 import controlador.OyentePanel;
+import controlador.OyenteTeclado;
 import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JScrollBar;
@@ -35,9 +36,9 @@ public class DiagramasDeFlujo {
         OyenteMenu oyenteM= new OyenteMenu(diagrama, panel);
         
         VentanaDiagramas ventana= new VentanaDiagramas("Diagramas de flujo");
-        
         ventana.addEventos(oyenteM);
         
+        OyenteTeclado oyenteTe= new OyenteTeclado(diagrama,panel);
         panel.setPreferredSize(new Dimension(2000,3000));
         JScrollPane scroll= new JScrollPane(panel);
         

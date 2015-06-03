@@ -292,6 +292,15 @@ public abstract class ComponenteContenedor implements Componente {
      * @param i 
      */
     public void addComponenteInterior(Componente c, int i){
+        if(c==null){
+            if(i<componentesInternos.length ){
+                if(componentesInternos[i]!=null){ //para borrarlo, puede dar problemas en otros casos... o no
+                    componentesInternos[i].setAnterior(null);
+                }
+                componentesInternos[i]=null;
+            }
+            return ;
+        }
         if(c.getAnterior()!=null){ // para el conector de arriba del elemento a agregar, se desconecta de su actual componente y se iguala a null
             c.getAnterior().setSiguiente(null);
             //c.setAnterior(null); 
@@ -336,7 +345,7 @@ public abstract class ComponenteContenedor implements Componente {
                 }else {
                     Componente fin= c.getComponenteFinal();
                     
-                    if(fin!=null){
+                    if(fin!=null){ //este if no es necesario
                         Componente nuevoFin=fin.getSiguiente();
                         if(nuevoFin!=null)
                             nuevoFin.setAnterior(this);

@@ -113,7 +113,7 @@ public class Hacermientras extends ComponenteContenedor{
     public int getAncho() {
         int anchoIzq=this.ancho/2; 
         //int anchoDer=anchoIzq + 30 + 10 + 20;
-        int anchoDer=conectorSi.x-anchoIzq;
+        int anchoDer=conectorSi.x-anchoIzq+10;
 //Configuracion de linea y texto 30 del largo minimo de la linea, 10 de lo que movimos la palabra "si" o "no" y 20 de lo que mide la palabra 
         
         return (anchoIzq<<16) | anchoDer;

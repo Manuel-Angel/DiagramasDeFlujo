@@ -11,55 +11,55 @@ public interface CompiladorConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int entero = 1;
+  int entero = 5;
   /** RegularExpression Id. */
-  int flotante = 2;
+  int flotante = 6;
   /** RegularExpression Id. */
-  int doble = 3;
+  int doble = 7;
   /** RegularExpression Id. */
-  int caracter = 4;
+  int caracter = 8;
   /** RegularExpression Id. */
-  int largo = 5;
+  int largo = 9;
   /** RegularExpression Id. */
-  int OP_SUMA = 6;
+  int OP_SUMA = 10;
   /** RegularExpression Id. */
-  int OP_RESTA = 7;
+  int OP_RESTA = 11;
   /** RegularExpression Id. */
-  int NUMERO = 8;
+  int NUMERO = 12;
   /** RegularExpression Id. */
-  int NUM_DEC = 9;
+  int NUM_DEC = 13;
   /** RegularExpression Id. */
-  int MODULO = 10;
+  int MODULO = 14;
   /** RegularExpression Id. */
-  int IGUAL = 11;
+  int IGUAL = 15;
   /** RegularExpression Id. */
-  int POR = 12;
+  int POR = 16;
   /** RegularExpression Id. */
-  int ENTRE = 13;
+  int ENTRE = 17;
   /** RegularExpression Id. */
-  int FIN = 14;
+  int FIN = 18;
   /** RegularExpression Id. */
-  int MENOR = 15;
+  int MENOR = 19;
   /** RegularExpression Id. */
-  int MAYOR = 16;
+  int MAYOR = 20;
   /** RegularExpression Id. */
-  int ABRE = 17;
+  int ABRE = 21;
   /** RegularExpression Id. */
-  int CIERRA = 18;
+  int CIERRA = 22;
   /** RegularExpression Id. */
-  int COMA = 19;
+  int COMA = 23;
   /** RegularExpression Id. */
-  int COMILLA = 20;
+  int COMILLA = 24;
   /** RegularExpression Id. */
-  int CORCH_ABRE = 21;
+  int CORCH_ABRE = 25;
   /** RegularExpression Id. */
-  int CORCH_CIER = 22;
+  int CORCH_CIER = 26;
   /** RegularExpression Id. */
-  int LETRA = 23;
+  int LETRA = 27;
   /** RegularExpression Id. */
-  int CARAC_ESP = 24;
+  int CARACTER_LITERAL = 28;
   /** RegularExpression Id. */
-  int VARIABLE = 25;
+  int VARIABLE = 29;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -67,6 +67,10 @@ public interface CompiladorConstants {
   /** Literal token values. */
   String[] tokenImage = {
     "<EOF>",
+    "\" \"",
+    "\"\\r\"",
+    "\"\\t\"",
+    "\"\\n\"",
     "\"entero\"",
     "\"flotante\"",
     "\"doble\"",
@@ -90,12 +94,8 @@ public interface CompiladorConstants {
     "\"[\"",
     "\"]\"",
     "<LETRA>",
-    "<CARAC_ESP>",
+    "<CARACTER_LITERAL>",
     "<VARIABLE>",
-    "\" \"",
-    "\"\\r\"",
-    "\"\\t\"",
-    "\"\\n\"",
   };
 
 }

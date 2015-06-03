@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Collections;
 import modelos.compilador.Compilador;
 
 /**
@@ -487,5 +488,66 @@ public class Diagrama {
         componentes=nuevos;
         reacomodaTodos();
         return true;
+    }
+    /**
+     * Busca y elimina los componentes que estan seleccionados y concatena sus 
+     * extremos.
+     * @return 
+     */
+    public void borraComponentesSeleccionados(){
+        for (int i = 0; i < componentes.size(); i++) {
+            if(componentes.get(i).isSelected()){
+                System.out.println("i: " + i);
+                borraSetDeComponentes(componentes.get(i));
+                i=-1;
+            }
+        }
+    }
+    /**
+     * Borra todos los componentes que estan ligados a C y que estan 
+     * seleccionados.
+     * @param c 
+     */
+    private void borraSetDeComponentes(Componente c){
+        Componente principio=c.getComponentePrincipio(true); 
+        Componente fin=c.getComponenteFinal();
+        ArrayList<Integer> buffer=new ArrayList<>(); //guarda todos los indices de los objetos a borrar
+        int index;
+        for (Componente i = principio ; i!=fin ; i=i.getSiguiente()) {
+            index=getIndex(i);
+            if(index!=-1)
+                buffer.add(index);
+            else break;//System.out.println("no encontro: " + i.getCodigoInterior());
+        }
+        //System.out.println("Guardo ");
+        index=getIndex(fin);
+        if(index!=-1)
+            buffer.add(index);
+        
+        Componente aux=principio.getAnterior();
+        boolean salvoFin=false;
+        if(aux!=null){ //salva las conecciones primero
+            if(aux instanceof ComponenteContenedor){
+                if(((ComponenteContenedor)aux).contieneComponente(principio)==0){
+                    int i=((ComponenteContenedor)aux).enQueConectorEsta(principio);
+                    ((ComponenteContenedor)aux).borra(principio);
+                    salvoFin=true;
+                }else aux.setSiguiente(fin.getSiguiente());
+            }else
+                aux.setSiguiente(fin.getSiguiente());
+        }
+        if(fin.getSiguiente()!=null && !salvoFin){
+            fin.getSiguiente().setAnterior(principio.getAnterior());
+        }
+        //System.out.println("Reconecto");
+        Collections.sort(buffer);
+        for (int i = buffer.size()-1; i>=0; i--) {
+            if(componentes.get((int)buffer.get(i)) instanceof ComponenteContenedor){
+                ((ComponenteContenedor)componentes.get((int)buffer.get(i))).addComponenteInterior(null, 0);
+                ((ComponenteContenedor)componentes.get((int)buffer.get(i))).addComponenteInterior(null, 1);
+            }
+            componentes.remove((int)buffer.get(i));
+        }
+        //System.out.println("Removio");
     }
 }

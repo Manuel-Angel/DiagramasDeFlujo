@@ -165,8 +165,8 @@ public class Inicio implements Componente {
                         default : codigoCompleto.append(token.image).append(" ");
                     }
                 }
-                //File temp= new File("codigo.temp");
-                //temp.delete();
+                File temp= new File("codigo.temp");
+                temp.delete();
             }
         } catch (FileNotFoundException ex) {
             

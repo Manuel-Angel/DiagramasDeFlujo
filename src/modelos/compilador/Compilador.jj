@@ -1,3 +1,4 @@
+
 options{
     STATIC = false;
 }
@@ -49,6 +50,14 @@ TOKEN_MGR_DECLS : {
     public ArrayList<Token> tablaTok = new ArrayList();
 	public TreeMap<Token,Token> variables= new TreeMap();
 }
+
+SKIP : {
+    " "
+    |"\r" 
+    |"\t" 
+    |"\n" 
+}
+ 
 TOKEN:
 {       //TIPO DE DATOS
 
@@ -144,7 +153,18 @@ TOKEN:
 			//System.out.println("Token: LETRA" + image);
 			tablaTok.add(matchedToken);
 		}
-		|<CARAC_ESP: ("!"|"\""| ["#"-"/"] | ":" | ";" |"@" |"?")>{
+		|<CARACTER_LITERAL: 
+		"'"
+      (   (~["'","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+      )
+      "'"
+		>{
 			tablaTok.add(matchedToken);
 		}
 		|<VARIABLE:<LETRA>(<LETRA> | <NUMERO> | "_")*   >{
@@ -153,13 +173,6 @@ TOKEN:
 		}
 }
 
-
-SKIP : {
-    " "
-    |"\r" 
-    |"\t" 
-    |"\n" 
-}
 
 void analisisLexico():
 {
@@ -189,7 +202,7 @@ void analisisLexico():
 	| <IGUAL> {   } 
 	
 	| <LETRA> {   } 
-	| <CARAC_ESP>
+	| <CARACTER_LITERAL>
 	| <VARIABLE> //{ compilacion.add(token.image.toString());  } 
 	| <FIN>{ } 
 	| <ABRE>
@@ -217,7 +230,7 @@ void constantes():
 {
 	<NUMERO>
 	|<NUM_DEC>
-	|<COMILLA>(<LETRA> | <CARAC_ESP>)<COMILLA>
+	|<CARACTER_LITERAL>
 }
 void declaracionesGlobales():
 {
