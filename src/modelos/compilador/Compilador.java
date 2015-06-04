@@ -242,6 +242,7 @@ public class Compilador implements CompiladorConstants {
         mensajes.clear();
         token_source.tablaTok.clear();
         token_source.variables.clear();
+        int dimenciones=0;
         //System.out.println("mensajes: "+mensajes.size() + " tabla: " + token_source.tablaTok.size() + " variables: "+token_source.variables.size());
 
     try {
@@ -275,14 +276,12 @@ public class Compilador implements CompiladorConstants {
           jj_consume_token(-1);
           throw new ParseException();
         }
-if(token_source.variables.get(t)==null)
-                                        token_source.variables.put(t,tipo);
-                                else mensajes.add("La variable " + t.image +" (linea:"+t.beginLine+" columna:" +t.beginColumn+")" +"ya ha sido declarada antes.");
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case CORCH_ABRE:{
           jj_consume_token(CORCH_ABRE);
           jj_consume_token(NUMERO);
           jj_consume_token(CORCH_CIER);
+dimenciones++;
           break;
           }
         default:
@@ -299,6 +298,11 @@ if(token_source.variables.get(t)==null)
           jj_la1[7] = jj_gen;
           ;
         }
+if(token_source.variables.get(t)==null){
+                                                t.dimenciones=dimenciones;
+                                                dimenciones=0;
+                                                token_source.variables.put(t,tipo);
+                                }else mensajes.add("La variable " + t.image +" (linea:"+t.beginLine+" columna:" +t.beginColumn+")" +"ya ha sido declarada antes.");
         label_3:
         while (true) {
           switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -318,9 +322,6 @@ if(token_source.variables.get(t)==null)
             }
           case LETRA:{
             t = jj_consume_token(LETRA);
-if(token_source.variables.get(t)==null)
-                                        token_source.variables.put(t,tipo);
-                                else mensajes.add("La variable " + t.image +" (linea:"+t.beginLine+" columna:" +t.beginColumn+")" +"ya ha sido declarada antes.");
             break;
             }
           default:
@@ -333,6 +334,7 @@ if(token_source.variables.get(t)==null)
             jj_consume_token(CORCH_ABRE);
             jj_consume_token(NUMERO);
             jj_consume_token(CORCH_CIER);
+dimenciones++;
             break;
             }
           default:
@@ -349,6 +351,11 @@ if(token_source.variables.get(t)==null)
             jj_la1[11] = jj_gen;
             ;
           }
+if(token_source.variables.get(t)==null){
+                                                t.dimenciones=dimenciones;
+                                                dimenciones=0;
+                                                token_source.variables.put(t,tipo);
+                                        }else mensajes.add("La variable " + t.image +" (linea:"+t.beginLine+" columna:" +t.beginColumn+")" +"ya ha sido declarada antes.");
         }
         jj_consume_token(FIN);
       }
@@ -367,8 +374,63 @@ int ult=token_source.tablaTok.size()-1,i;
 
                 if(i!=ult){
                         Token er=token_source.tablaTok.get(i+1);
-                        mensajes.add("Error sintactico en token: "+ er +" en lina "+er.beginLine +" columna: "+er.beginColumn);
+                        mensajes.add("*Error sintactico en token: "+ er +" en linea "+er.beginLine +" columna: "+er.beginColumn);
                 }
+  }
+
+  final public void lectura() throws ParseException {token_source.tablaTok.clear();
+        //token_source.tablaTok=new ArrayList();
+        mensajes=new ArrayList();
+        Token t,tipo,aux;
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case VARIABLE:{
+      t = jj_consume_token(VARIABLE);
+      break;
+      }
+    case LETRA:{
+      t = jj_consume_token(LETRA);
+      break;
+      }
+    default:
+      jj_la1[12] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+aux=token_source.variables.get(t);
+                if(aux==null){
+                        mensajes.add("La variable " + t.image +" (linea:"+t.beginLine+" columna:" +t.beginColumn+")" +" aun no ha sido declarada.");
+                }
+    label_4:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case COMA:{
+        ;
+        break;
+        }
+      default:
+        jj_la1[13] = jj_gen;
+        break label_4;
+      }
+      jj_consume_token(COMA);
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case VARIABLE:{
+        t = jj_consume_token(VARIABLE);
+        break;
+        }
+      case LETRA:{
+        t = jj_consume_token(LETRA);
+        break;
+        }
+      default:
+        jj_la1[14] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+aux=token_source.variables.get(t);
+                        if(aux==null){
+                                mensajes.add("La variable " + t.image +" (linea:"+t.beginLine+" columna:" +t.beginColumn+")" +" aun no ha sido declarada.");
+                        }
+    }
   }
 
   /** Generated Token Manager. */
@@ -380,13 +442,13 @@ int ult=token_source.tablaTok.size()-1,i;
   public Token jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[12];
+  final private int[] jj_la1 = new int[15];
   static private int[] jj_la1_0;
   static {
       jj_la1_init_0();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x387fffe0,0x387fffe0,0x3e0,0x10003000,0x3e0,0x28000000,0x2000000,0x8000,0x800000,0x28000000,0x2000000,0x8000,};
+      jj_la1_0 = new int[] {0x387fffe0,0x387fffe0,0x3e0,0x10003000,0x3e0,0x28000000,0x2000000,0x8000,0x800000,0x28000000,0x2000000,0x8000,0x28000000,0x800000,0x28000000,};
    }
 
   /** Constructor with InputStream. */
@@ -400,7 +462,7 @@ int ult=token_source.tablaTok.size()-1,i;
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 12; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 15; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -414,7 +476,7 @@ int ult=token_source.tablaTok.size()-1,i;
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 12; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 15; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -424,7 +486,7 @@ int ult=token_source.tablaTok.size()-1,i;
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 12; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 15; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -434,7 +496,7 @@ int ult=token_source.tablaTok.size()-1,i;
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 12; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 15; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -443,7 +505,7 @@ int ult=token_source.tablaTok.size()-1,i;
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 12; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 15; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -452,7 +514,7 @@ int ult=token_source.tablaTok.size()-1,i;
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 12; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 15; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
@@ -508,7 +570,7 @@ int ult=token_source.tablaTok.size()-1,i;
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 12; i++) {
+    for (int i = 0; i < 15; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {

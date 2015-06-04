@@ -12,6 +12,7 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.Scanner;
+import modelos.compilador.Compilador;
 
 /**
  *
@@ -47,6 +48,7 @@ public class Fin implements Componente{
     
     private Componente anterior=null;
     private String codigoInterior;
+    private Compilador compilador;
     public Fin(int x, int y){
         this.x=x;
         this.y=y;
@@ -248,7 +250,12 @@ public class Fin implements Componente{
         a|=ancho/2;
         return a;
     }
-
+    /**
+    * @param compilador the compilador to set
+    */
+    public void setCompilador(Compilador compilador) {
+        this.compilador = compilador;
+    }
     /*@Override
     public void mouseClick(MouseEvent evento) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

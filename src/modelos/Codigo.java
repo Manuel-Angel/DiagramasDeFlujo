@@ -12,6 +12,7 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.Scanner;
+import modelos.compilador.Compilador;
 import vista.FormularioCodigo;
 
 /**
@@ -20,7 +21,7 @@ import vista.FormularioCodigo;
  */
 
 public class Codigo implements Componente {
-
+    private Compilador compilador;
     Conector abajo;
     Conector arriba;
     int a=0;
@@ -295,5 +296,11 @@ public class Codigo implements Componente {
         int a=(ancho>>1)<<16;
         a|=ancho/2;
         return a;
+    }
+    /**
+     * @param compilador the compilador to set
+     */
+    public void setCompilador(Compilador compilador) {
+        this.compilador = compilador;
     }
 }

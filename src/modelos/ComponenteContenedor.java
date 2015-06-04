@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.util.Scanner;
+import modelos.compilador.Compilador;
 
 /**
  *
@@ -60,6 +61,7 @@ public abstract class ComponenteContenedor implements Componente {
     protected Componente anterior;
     
     protected String codigoInterior;
+    private Compilador compilador;
     public ComponenteContenedor(int x, int y){
         this.x=x;
         this.y=y;
@@ -405,5 +407,11 @@ public abstract class ComponenteContenedor implements Componente {
             codigoTab.append(s.nextLine()).append('\n');
         }
         return codigoTab.toString();
+    }
+    /**
+    * @param compilador the compilador to set
+    */
+    public void setCompilador(Compilador compilador) {
+        this.compilador = compilador;
     }
 }

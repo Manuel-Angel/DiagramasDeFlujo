@@ -101,7 +101,11 @@ public class Token implements java.io.Serializable, Comparable<Token> {
   {
     return image;
   }
-
+  /**
+   * Si el token es un identificador de un arreglo este numero guardara 
+   * cuantas dimenciones tiene, si es una variable entonces es igual a 0
+   */
+  public int dimenciones;
   /**
    * Returns a new Token object, by default. However, if you want, you
    * can create and return subclass objects based on the value of ofKind.

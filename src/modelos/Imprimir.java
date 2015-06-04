@@ -13,6 +13,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.geom.GeneralPath;
 import java.util.Scanner;
+import modelos.compilador.Compilador;
 
 /**
  *
@@ -61,6 +62,7 @@ public class Imprimir implements Componente{
     private String codigoInterior;
     
     private GeneralPath fig;
+    private Compilador compilador;
     public Imprimir(int x, int y){
         this.x=x;
         this.y=y;
@@ -292,5 +294,10 @@ public class Imprimir implements Componente{
         a|=ancho/2;
         return a;
     }
-    
+    /**
+     * @param compilador the compilador to set
+     */
+    public void setCompilador(Compilador compilador) {
+        this.compilador = compilador;
+    }
 }

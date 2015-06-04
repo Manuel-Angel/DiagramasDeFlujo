@@ -1,5 +1,1 @@
-entero x=3;
-flotante y=3.141592653589;
-doble z= 10.221;
-entero a=1,v=3, c=4,n;
-caracter r='a';
+x,y, resp

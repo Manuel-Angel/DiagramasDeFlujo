@@ -179,6 +179,7 @@ public class Inicio implements Componente {
         Componente aux=siguiente;
         String cod;
         while(aux!=null){
+            aux.setCompilador(compilador);
             cod=aux.generarCodigo();
             if(cod!=null && cod.length()>0){
                 cod=tabular(cod);
@@ -339,7 +340,13 @@ public class Inicio implements Componente {
         a|=ancho/2;
         return a;
     }
-
+    /**
+     * @param compilador the compilador to set
+     */
+    @Override
+    public void setCompilador(Compilador compilador) {
+        this.compilador = compilador;
+    }
     /*@Override
     public void mouseClick(MouseEvent evento) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

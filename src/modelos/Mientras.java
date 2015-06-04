@@ -8,6 +8,7 @@ package modelos;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
+import modelos.compilador.Compilador;
 
 /**
  *
@@ -16,6 +17,7 @@ import java.awt.event.MouseEvent;
 public class Mientras extends ComponenteContenedor{
     int romboX[];
     int romboY[];
+    private Compilador compilador;
     public Mientras(int x, int y) {
         super(x, y);
         arriba= new Conector(ancho/2, -30, 5, Color.BLACK);
@@ -177,7 +179,12 @@ public class Mientras extends ComponenteContenedor{
         }
         return Math.max(altoT, aux);
     }
-
+    /**
+    * @param compilador the compilador to set
+    */
+    public void setCompilador(Compilador compilador) {
+        this.compilador = compilador;
+    }
     /*@Override
     public void mouseClick(MouseEvent evento) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

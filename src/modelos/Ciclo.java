@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import modelos.compilador.Compilador;
 import vista.FormularioCodigo;
 /**
  *
@@ -45,6 +46,7 @@ public class Ciclo extends ComponenteContenedor {
      * Contiene la direccion del siguiente componente, es decir, el que esta 
      * conectado abajo de el y que se ejecutaria despues de este componente.
     */
+    private Compilador compilador;
     public Ciclo(int x, int y) {
         super(x, y);
         this.x=x;
@@ -259,5 +261,12 @@ public class Ciclo extends ComponenteContenedor {
     @Override
     public void actualizaConectores() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    /**
+     * @param compilador the compilador to set
+     */
+    public void setCompilador(Compilador compilador) {
+        this.compilador = compilador;
     }
 }

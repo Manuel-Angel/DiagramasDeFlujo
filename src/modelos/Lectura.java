@@ -7,7 +7,22 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import modelos.compilador.Compilador;
+import modelos.compilador.CompiladorConstants;
+import modelos.compilador.ParseException;
+import modelos.compilador.Token;
 
 /**
  *
@@ -60,7 +75,8 @@ public class Lectura implements Componente{
     private Componente anterior;
     
     private String codigoInterior;
-
+    private Compilador compilador;
+    ArrayList<String> mensajes;
     public Lectura(int x, int y){
         this.x=x;
         this.y=y;
@@ -131,6 +147,15 @@ public class Lectura implements Componente{
             g.drawString(aux, x+inclinacion-linea*3, y+15+linea*metrics.getHeight());
             linea++;
         }
+        int alt=metrics.getHeight()+2;
+        if(mensajes!=null && mensajes.size()>0 && selected){
+            for (int i = 0; i < mensajes.size(); i++) {
+                g.setColor(Color.YELLOW);
+                g.fillRect(x+50, y+alt*i+2, metrics.stringWidth(mensajes.get(i)), alt);
+                g.setColor(Color.BLACK);
+                g.drawString(mensajes.get(i), x+50, y+alt+alt*i);
+            }
+        }
     }
     public String recortarCadena(FontMetrics fm, String codigo){
         int i=10;
@@ -151,9 +176,80 @@ public class Lectura implements Componente{
     
     @Override
     public String generarCodigo() {
-        //aqui aun no se como cambiaremos de lista de variables a puros scanf leyento esas variables
-        //creo que hay que hacer un objeto variable, y guardarlo en el inicio o algo asi
-        return codigoInterior;
+        StringBuilder codigo= new StringBuilder();
+        if(codigoInterior!=null){
+            //codigoCompleto.append(codigoInterior);//contendra las declaraciones de variables globales
+            FileWriter save;
+            try {
+                save = new FileWriter("codigo.temp");
+                save.write(codigoInterior);
+                save.close();
+                if(compilador==null){ //esto no debe ser necesario
+                    Reader r;
+                    r = new InputStreamReader(new FileInputStream("codigo.temp"));
+                    compilador = new Compilador(r); //en vez de System.in le pasamos un archivo
+                }else compilador.ReInit(new InputStreamReader(new FileInputStream("codigo.temp")));
+            } catch (IOException ex) {
+                System.out.println("Error al abrir archivo " + ex);
+                return "";
+            }
+        }else return "";
+        try {
+            compilador.lectura();
+        } catch (ParseException ex) {
+            System.out.println("Error de sintaxis " + ex);
+            return "";
+        }
+        ArrayList<Token> tokens= compilador.token_source.tablaTok;
+        TreeMap<Token, Token> var=compilador.token_source.variables;
+        Set llaves=var.keySet();
+        mensajes= compilador.mensajes;
+        if(mensajes!=null && mensajes.size()>0)selected=true;
+        codigo.append("scanf(\"");
+        int variables=0;
+        for (int i = 0; i < tokens.size(); i++) {
+            if(tokens.get(i).kind!=CompiladorConstants.COMA){
+                Iterator it=llaves.iterator();
+                while(it.hasNext()){
+                    Token t=(Token)it.next(); 
+                    if(t.compareTo(tokens.get(i))!=0)continue; //buscara el token 
+                    System.out.println("Variable " +t.image + " arreglo: " + t.dimenciones);
+                    if(t.dimenciones==0){
+                        variables++;
+                        switch(var.get(tokens.get(i)).kind){
+                            case CompiladorConstants.entero: codigo.append("%d"); break;
+                            case CompiladorConstants.flotante:
+                            case CompiladorConstants.doble: codigo.append("%f"); break;
+                            case CompiladorConstants.largo: codigo.append("lld"); break;
+                            case CompiladorConstants.caracter: codigo.append("%c"); break;
+                            default: variables--;
+                        }
+                    } else if(t.dimenciones==1 && var.get(tokens.get(i)).kind==CompiladorConstants.caracter){
+                        codigo.append("%s"); 
+                        variables++;
+                    }else {
+                        String tok=t.image;
+                        for (int j = 0; j < t.dimenciones; j++) {
+                            tok+="[]";
+                        }
+                        mensajes.add("El token " + tok + " no puede ser leido.");
+                    }
+                }
+            }
+        }
+        codigo.append("\",");
+        int vn=0; //para contar si todavia hay variables por poner, para poner una coma
+        for (int i = 0; i < tokens.size(); i++) {
+            if(tokens.get(i).kind==CompiladorConstants.COMA)continue;
+            Token to=var.get(tokens.get(i));
+            if(to!=null){
+                vn++;
+                codigo.append("&").append(tokens.get(i));
+                if(vn<variables)codigo.append(",");
+            }
+        }
+        codigo.append(");");
+        return codigo.toString();
     }
 
     @Override
@@ -302,7 +398,12 @@ public class Lectura implements Componente{
         a|=ancho/2;
         return a;
     }
-
+    /**
+     * @param compilador the compilador to set
+     */
+    public void setCompilador(Compilador compilador) {
+        this.compilador = compilador;
+    }
     /*@Override
     public void mouseClick(MouseEvent evento) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

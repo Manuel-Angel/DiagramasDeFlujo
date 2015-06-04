@@ -8,6 +8,7 @@ package modelos;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
+import modelos.compilador.Compilador;
 /**
  *
  * @author Angel

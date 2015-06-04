@@ -8,6 +8,7 @@ package modelos;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import modelos.compilador.Compilador;
 
 /**
  *
@@ -125,4 +126,11 @@ public interface Componente {
      * @return El ancho
      */
     public int getAncho();
+    /**
+     * Le pasa el compilador que usara para generar el codigo a partir del 
+     * codigo interior del programa.
+     * @param comp 
+     */
+    public void setCompilador(Compilador comp);
+    
 }

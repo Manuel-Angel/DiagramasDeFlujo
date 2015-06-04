@@ -239,24 +239,31 @@ void declaracionesGlobales():
 	mensajes.clear();
 	token_source.tablaTok.clear();
 	token_source.variables.clear();
+	int dimenciones=0;
 	//System.out.println("mensajes: "+mensajes.size() + " tabla: " + token_source.tablaTok.size() + " variables: "+token_source.variables.size());
 }
 {
 	try{
 	( 
 			tipo=tipoDeDato()
-			(t=<VARIABLE>|t=<LETRA>){ 
-				if(token_source.variables.get(t)==null)
-					token_source.variables.put(t,tipo);
-				else mensajes.add("La variable " + t.image +" (linea:"+t.beginLine+" columna:" +t.beginColumn+")" +"ya ha sido declarada antes.");
+			((t=<VARIABLE>|t=<LETRA>)
+				(<CORCH_ABRE><NUMERO><CORCH_CIER>{dimenciones++; })?(<IGUAL>constantes())?
+			){ 
+				if(token_source.variables.get(t)==null){
+						t.dimenciones=dimenciones;
+						dimenciones=0;
+						token_source.variables.put(t,tipo); 
+				}else mensajes.add("La variable " + t.image +" (linea:"+t.beginLine+" columna:" +t.beginColumn+")" +"ya ha sido declarada antes.");
 			}
-			(<CORCH_ABRE><NUMERO><CORCH_CIER>)?(<IGUAL>constantes())?
-			(<COMA>(<VARIABLE>|t=<LETRA>{
-				if(token_source.variables.get(t)==null)
-					token_source.variables.put(t,tipo); 
-				else mensajes.add("La variable " + t.image +" (linea:"+t.beginLine+" columna:" +t.beginColumn+")" +"ya ha sido declarada antes.");
-				})
-				(<CORCH_ABRE><NUMERO><CORCH_CIER>)?(<IGUAL>constantes())?
+			((<COMA>(<VARIABLE>|t=<LETRA>)
+				(<CORCH_ABRE><NUMERO><CORCH_CIER>{dimenciones++; })?(<IGUAL>constantes())?
+			){
+					if(token_source.variables.get(t)==null){
+						t.dimenciones=dimenciones;
+						dimenciones=0;
+						token_source.variables.put(t,tipo); 
+					}else mensajes.add("La variable " + t.image +" (linea:"+t.beginLine+" columna:" +t.beginColumn+")" +"ya ha sido declarada antes.");
+				}
 			)*
 			<FIN>
 	
@@ -277,7 +284,29 @@ void declaracionesGlobales():
 
 		if(i!=ult){
 			Token er=token_source.tablaTok.get(i+1);
-			mensajes.add("Error sintactico en token: "+ er +" en lina "+er.beginLine +" columna: "+er.beginColumn);
+			mensajes.add("*Error sintactico en token: "+ er +" en linea "+er.beginLine +" columna: "+er.beginColumn);
 		}
 	}
+}
+void lectura():
+{
+	token_source.tablaTok.clear();
+	//token_source.tablaTok=new ArrayList();
+	mensajes=new ArrayList();
+	Token t,tipo,aux;
+}
+{
+	(t=<VARIABLE>|t=<LETRA>){ 
+		aux=token_source.variables.get(t);
+		if(aux==null){
+			mensajes.add("La variable " + t.image +" (linea:"+t.beginLine+" columna:" +t.beginColumn+")" +" aun no ha sido declarada.");
+		}
+	}
+	(<COMA>(t=<VARIABLE>|t=<LETRA>){ 
+			aux=token_source.variables.get(t);
+			if(aux==null){
+				mensajes.add("La variable " + t.image +" (linea:"+t.beginLine+" columna:" +t.beginColumn+")" +" aun no ha sido declarada.");
+			}
+		}
+	)*
 }
