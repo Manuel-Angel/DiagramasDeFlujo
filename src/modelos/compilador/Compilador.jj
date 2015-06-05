@@ -1,6 +1,7 @@
 
 options{
     STATIC = false;
+	LOOKAHEAD=2;
 }
 
 
@@ -23,7 +24,8 @@ public class Compilador{
 		Compilador compilador = new Compilador(r); //en vez de System.in le pasamos un archivo
 		try{
 			//compilador.analisisLexico();
-			compilador.declaracionesGlobales();
+			//compilador.declaracionesGlobales();
+			compilador.VariableDeclarator();
 		}catch(ParseException ex){
 			System.out.println(ex.getMessage());
 		}
@@ -149,8 +151,29 @@ TOKEN:
 		|<CORCH_CIER: "]">{
 			tablaTok.add(matchedToken);
 		}
+		|<LLAVE_ABRE: "{">{
+			tablaTok.add(matchedToken);
+		}
+		|<LLAVE_CIERRE: "}">{
+			tablaTok.add(matchedToken);
+		}
 		|<LETRA:(["a"-"z"]|["A"-"Z"])>{
 			//System.out.println("Token: LETRA" + image);
+			tablaTok.add(matchedToken);
+		}
+		|<Y: "&">{
+			tablaTok.add(matchedToken);
+		}
+		|<O: "|">{
+			tablaTok.add(matchedToken);
+		}
+		|<NO: "!">{
+			tablaTok.add(matchedToken);
+		}
+		| < XOR: "^" >{
+			tablaTok.add(matchedToken);
+		}
+		| < TILDE: "~" >{
 			tablaTok.add(matchedToken);
 		}
 		|<CARACTER_LITERAL: 
@@ -169,6 +192,20 @@ TOKEN:
 		}
 		|<VARIABLE:<LETRA>(<LETRA> | <NUMERO> | "_")*   >{
 			//System.out.println("Token: VARIABLE " + image);
+			tablaTok.add(matchedToken);
+		}
+		|< STRING_LITERAL:
+		  "\""
+		  (   (~["\"","\\","\n","\r"])
+			| ("\\"
+				( ["n","t","b","r","f","\\","'","\""]
+				| ["0"-"7"] ( ["0"-"7"] )?
+				| ["0"-"3"] ["0"-"7"] ["0"-"7"]
+				)
+			  )
+		  )*
+		  "\""
+		>{
 			tablaTok.add(matchedToken);
 		}
 }
@@ -231,6 +268,14 @@ void constantes():
 	<NUMERO>
 	|<NUM_DEC>
 	|<CARACTER_LITERAL>
+	|<STRING_LITERAL>
+}
+Token identificador():
+{
+	Token t;
+}
+{
+	(t=<LETRA> |t=<VARIABLE>) { return t; }
 }
 void declaracionesGlobales():
 {
@@ -247,7 +292,7 @@ void declaracionesGlobales():
 	( 
 			tipo=tipoDeDato()
 			((t=<VARIABLE>|t=<LETRA>)
-				(<CORCH_ABRE><NUMERO><CORCH_CIER>{dimenciones++; })?(<IGUAL>constantes())?
+				(<CORCH_ABRE><NUMERO><CORCH_CIER>{dimenciones++; })*[<IGUAL>constantes()]
 			){ 
 				if(token_source.variables.get(t)==null){
 						t.dimenciones=dimenciones;
@@ -255,8 +300,8 @@ void declaracionesGlobales():
 						token_source.variables.put(t,tipo); 
 				}else mensajes.add("La variable " + t.image +" (linea:"+t.beginLine+" columna:" +t.beginColumn+")" +"ya ha sido declarada antes.");
 			}
-			((<COMA>(<VARIABLE>|t=<LETRA>)
-				(<CORCH_ABRE><NUMERO><CORCH_CIER>{dimenciones++; })?(<IGUAL>constantes())?
+			((<COMA>(t=<VARIABLE>|t=<LETRA>)
+				(<CORCH_ABRE><NUMERO><CORCH_CIER>{dimenciones++; })*[<IGUAL>constantes()]
 			){
 					if(token_source.variables.get(t)==null){
 						t.dimenciones=dimenciones;
@@ -294,19 +339,203 @@ void lectura():
 	//token_source.tablaTok=new ArrayList();
 	mensajes=new ArrayList();
 	Token t,tipo,aux;
+	int dim=0;
 }
 {
-	(t=<VARIABLE>|t=<LETRA>){ 
+	(t=identificador()
+	(<CORCH_ABRE>Expression()<CORCH_CIER>{dim++; })*
+	){ 
 		aux=token_source.variables.get(t);
+		t.dimenciones=dim; //esto hace que en realidad se altere el token que se guardo en el arrayList ? 
+		dim=0;
 		if(aux==null){
 			mensajes.add("La variable " + t.image +" (linea:"+t.beginLine+" columna:" +t.beginColumn+")" +" aun no ha sido declarada.");
 		}
 	}
-	(<COMA>(t=<VARIABLE>|t=<LETRA>){ 
+	((<COMA>(t=identificador())
+		(<CORCH_ABRE>Expression()<CORCH_CIER>{dim++; })*
+	)	{ 
 			aux=token_source.variables.get(t);
+			t.dimenciones=dim; //esto hace que en realidad se altere el token que se guardo en el arrayList ? 
+			dim=0;
 			if(aux==null){
 				mensajes.add("La variable " + t.image +" (linea:"+t.beginLine+" columna:" +t.beginColumn+")" +" aun no ha sido declarada.");
 			}
 		}
 	)*
+}
+void imprimir():
+{
+	token_source.tablaTok.clear();
+	//token_source.tablaTok=new ArrayList();
+	mensajes=new ArrayList();
+}
+{
+	(<STRING_LITERAL> | PostfixExpression() | <ABRE>Expression()<CIERRA> )
+	(<OP_SUMA>(<STRING_LITERAL> | PostfixExpression() | <ABRE>Expression()<CIERRA> ))* 
+}
+
+void VariableDeclarator() :
+{
+	Token tipo;
+}
+{
+	(tipo=tipoDeDato() VariableDeclaratorId(tipo) <FIN>)*
+}
+void VariableDeclaratorId(Token tipo) :
+{
+	int dimenciones=0;
+	Token t;
+}
+{
+  t=identificador() (<CORCH_ABRE><NUMERO><CORCH_CIER>{dimenciones++; })*
+  {
+	if(token_source.variables.get(t)==null){ //aqui deberia cambiarse por un treeMap de declaraciones locales pero como no hay declaracion de funciones entonces yolo
+		t.dimenciones=dimenciones;
+		dimenciones=0;
+		token_source.variables.put(t,tipo); 
+	}else mensajes.add("La variable " + t.image +" (linea:"+t.beginLine+" columna:" +t.beginColumn+")" +"ya ha sido declarada antes.");
+  }
+  [ <IGUAL> VariableInitializer() ]
+  (<COMA>VariableDeclaratorId(tipo))*
+}
+
+void VariableInitializer() :
+{}
+{
+	ArrayInitializer()
+	|
+	Expression()
+}
+void ArrayInitializer() :
+{}
+{
+	<LLAVE_ABRE> [ VariableInitializer() ( LOOKAHEAD(2) <COMA> VariableInitializer() )* ] [ <COMA> ] <LLAVE_CIERRE>
+}
+
+void Expression():
+{
+	Token t, aux;
+}
+{
+	ConditionalOrExpression() [AssignmentOperator() Expression()]
+}
+
+void AssignmentOperator() :
+{}
+{
+  <IGUAL> | <POR><IGUAL> | <ENTRE><IGUAL> | <MODULO><IGUAL> | <OP_SUMA><IGUAL> | <OP_RESTA><IGUAL> | <MENOR><MENOR><IGUAL> | <MAYOR><MAYOR><IGUAL>| <MAYOR><MAYOR><IGUAL> | <Y><IGUAL> | <XOR><IGUAL> | <O><IGUAL>
+}
+
+void ConditionalOrExpression() :
+{}
+{
+  ConditionalAndExpression() ( <O>/*<O>*/ConditionalAndExpression() )*
+}
+void ConditionalAndExpression() :
+{}
+{
+  InclusiveOrExpression() ( <Y>/*<Y>*/( InclusiveOrExpression() ))*
+}
+
+void InclusiveOrExpression() :
+{}
+{
+  ExclusiveOrExpression() //( <XOR> ExclusiveOrExpression() )*
+}
+void ExclusiveOrExpression() :
+{}
+{
+  AndExpression() ( <XOR>AndExpression() )*
+}
+void AndExpression() :
+{}
+{
+	//EqualityExpression() ( <Y>"&" EqualityExpression() )*
+	  EqualityExpression()
+}
+void EqualityExpression() :
+{}
+{
+	RelationalExpression() ( ( <IGUAL><IGUAL> | <NO><IGUAL> ) RelationalExpression() )*
+}
+void RelationalExpression() :
+{}
+{
+  ShiftExpression() ( ( <MENOR> | <MAYOR> | <MENOR><IGUAL> | <MAYOR><IGUAL> ) ShiftExpression() )*
+}
+
+void ShiftExpression() :
+{}
+{
+  AdditiveExpression() ( ( <MENOR><MENOR> | <MAYOR><MAYOR> | <MAYOR><MAYOR><MAYOR> ) AdditiveExpression() )*
+}
+void AdditiveExpression() :
+{}
+{
+  MultiplicativeExpression() ( ( <OP_SUMA>| <OP_RESTA> ) MultiplicativeExpression() )*
+}
+void MultiplicativeExpression() :
+{}
+{
+  UnaryExpression() ( ( <POR>| <ENTRE> | <MODULO> ) UnaryExpression() )*
+}
+void UnaryExpression() :
+{}
+{
+	  ( <OP_SUMA> | <OP_RESTA> ) UnaryExpression()
+//|
+//  PreIncrementExpression()
+//|
+  //PreDecrementExpression()
+  | UnaryExpressionNotPlusMinus()
+}
+void UnaryExpressionNotPlusMinus() :
+{}
+{
+  ( <TILDE>| <NO> ) UnaryExpression()
+//|
+//LOOKAHEAD( CastLookahead() )
+//CastExpression()
+|
+  PostfixExpression()
+}
+void PostfixExpression() :
+{}
+{
+  PrimaryExpression() [ <OP_SUMA><OP_SUMA>| <OP_RESTA><OP_RESTA> ]
+}
+void PrimaryExpression() :
+{
+	int dim=0;
+	Token t;
+}
+{
+	(t=PrimaryPrefix() ( LOOKAHEAD(2) PrimarySuffix(){dim++; })*)
+	{
+		if(t!=null)t.dimenciones=dim; //esto es para que en un futuro las variables no sean tratados como arreglos ni viceversa
+	}
+}
+Token PrimaryPrefix() :
+{
+	Token t,aux;
+}
+{
+	constantes()
+	|
+	"(" Expression() ")"
+
+	|
+	t=identificador(){
+		aux=token_source.variables.get(t);
+		if(aux==null){
+			mensajes.add("La variable " + t.image +" (linea:"+t.beginLine+" columna:" +t.beginColumn+")" +" aun no ha sido declarada.");
+		}
+		return t;
+	}
+}
+void PrimarySuffix() :
+{}
+{
+	<CORCH_ABRE>Expression()<CORCH_CIER>
 }

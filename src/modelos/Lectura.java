@@ -204,17 +204,18 @@ public class Lectura implements Componente{
         TreeMap<Token, Token> var=compilador.token_source.variables;
         Set llaves=var.keySet();
         mensajes= compilador.mensajes;
-        if(mensajes!=null && mensajes.size()>0)selected=true;
         codigo.append("scanf(\"");
         int variables=0;
         for (int i = 0; i < tokens.size(); i++) {
             if(tokens.get(i).kind!=CompiladorConstants.COMA){
                 Iterator it=llaves.iterator();
                 while(it.hasNext()){
-                    Token t=(Token)it.next(); 
+                    Token t=(Token)it.next();
+                    if(!(i==0 || (i>0 &&tokens.get(i-1).image.equals(","))))continue;
                     if(t.compareTo(tokens.get(i))!=0)continue; //buscara el token 
-                    System.out.println("Variable " +t.image + " arreglo: " + t.dimenciones);
-                    if(t.dimenciones==0){
+                    int dim=t.dimenciones-tokens.get(i).dimenciones;
+                    System.out.println("Variable " +t.image + " arreglo: " + (dim));
+                    if(dim==0){
                         variables++;
                         switch(var.get(tokens.get(i)).kind){
                             case CompiladorConstants.entero: codigo.append("%d"); break;
@@ -224,12 +225,12 @@ public class Lectura implements Componente{
                             case CompiladorConstants.caracter: codigo.append("%c"); break;
                             default: variables--;
                         }
-                    } else if(t.dimenciones==1 && var.get(tokens.get(i)).kind==CompiladorConstants.caracter){
+                    } else if(dim==1 && var.get(tokens.get(i)).kind==CompiladorConstants.caracter){
                         codigo.append("%s"); 
                         variables++;
                     }else {
                         String tok=t.image;
-                        for (int j = 0; j < t.dimenciones; j++) {
+                        for (int j = 0; j < dim; j++) {
                             tok+="[]";
                         }
                         mensajes.add("El token " + tok + " no puede ser leido.");
@@ -237,16 +238,15 @@ public class Lectura implements Componente{
                 }
             }
         }
+        if(mensajes!=null && mensajes.size()>0)selected=true;
         codigo.append("\",");
-        int vn=0; //para contar si todavia hay variables por poner, para poner una coma
         for (int i = 0; i < tokens.size(); i++) {
-            if(tokens.get(i).kind==CompiladorConstants.COMA)continue;
-            Token to=var.get(tokens.get(i));
-            if(to!=null){
-                vn++;
+            Token to=tokens.get(i);
+            System.out.println(to);
+            if(to.kind==CompiladorConstants.VARIABLE || to.kind == CompiladorConstants.LETRA && 
+                    (i==0 || (i>0 &&tokens.get(i-1).image.equals(",")))){
                 codigo.append("&").append(tokens.get(i));
-                if(vn<variables)codigo.append(",");
-            }
+            }else codigo.append(tokens.get(i));
         }
         codigo.append(");");
         return codigo.toString();

@@ -2,4 +2,5 @@ entero x=3;
 flotante y=3.141592653589;
 doble z= 10.221;
 entero a=1,v=3, c=4,n; 
+entero array[10]={0,1,2,3,4,5};
 ax=z+1;

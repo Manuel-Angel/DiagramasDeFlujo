@@ -55,11 +55,27 @@ public interface CompiladorConstants {
   /** RegularExpression Id. */
   int CORCH_CIER = 26;
   /** RegularExpression Id. */
-  int LETRA = 27;
+  int LLAVE_ABRE = 27;
   /** RegularExpression Id. */
-  int CARACTER_LITERAL = 28;
+  int LLAVE_CIERRE = 28;
   /** RegularExpression Id. */
-  int VARIABLE = 29;
+  int LETRA = 29;
+  /** RegularExpression Id. */
+  int Y = 30;
+  /** RegularExpression Id. */
+  int O = 31;
+  /** RegularExpression Id. */
+  int NO = 32;
+  /** RegularExpression Id. */
+  int XOR = 33;
+  /** RegularExpression Id. */
+  int TILDE = 34;
+  /** RegularExpression Id. */
+  int CARACTER_LITERAL = 35;
+  /** RegularExpression Id. */
+  int VARIABLE = 36;
+  /** RegularExpression Id. */
+  int STRING_LITERAL = 37;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -93,9 +109,17 @@ public interface CompiladorConstants {
     "\"\\\"\"",
     "\"[\"",
     "\"]\"",
+    "\"{\"",
+    "\"}\"",
     "<LETRA>",
+    "\"&\"",
+    "\"|\"",
+    "\"!\"",
+    "\"^\"",
+    "\"~\"",
     "<CARACTER_LITERAL>",
     "<VARIABLE>",
+    "<STRING_LITERAL>",
   };
 
 }
