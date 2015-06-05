@@ -144,6 +144,7 @@ public class Si extends ComponenteContenedor{
         
         StringBuilder sino=new StringBuilder();
         while(aux!=null){
+            aux.setCompilador(compilador);
             linea=aux.generarCodigo();
             if(linea !=null &&linea.length()>0){
                 linea=tabular(linea);

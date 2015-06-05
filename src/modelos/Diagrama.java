@@ -478,10 +478,10 @@ public class Diagrama {
                     nuevos.get(i).setAnterior(nuevos.get(enlazes[i][1]));
             }
         }catch(IndexOutOfBoundsException ex){
-            System.out.println("El archivo esta corrompido, se salio del indice: " + ex.getMessage());
+            System.out.println("El archivo esta corrupto, se salio del indice: " + ex.getMessage());
             return false;
         }catch(NumberFormatException e){
-            System.out.println("El archivo esta corrompido, error de formato: " + e.getMessage());
+            System.out.println("El archivo esta corrupto, error de formato: " + e.getMessage());
             return false;
         }
         componentes.clear();

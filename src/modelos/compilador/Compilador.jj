@@ -1,7 +1,8 @@
 
 options{
     STATIC = false;
-	LOOKAHEAD=2;
+	//FORCE_LA_CHECK=true; //luego usar esto para ponerle los lookahead solo donde los necesita y hacerlo mas optimo
+	LOOKAHEAD=3;
 }
 
 
@@ -314,7 +315,7 @@ void declaracionesGlobales():
 	
 	)* 
 	}catch(ParseException ex){
-		System.out.println("que pedo " + ex);
+		//System.out.println("que pedo " + ex);
 		mensajes.add("Error sintactico: " +ex);
 	}catch (TokenMgrError te){
 		//do{
@@ -329,7 +330,7 @@ void declaracionesGlobales():
 
 		if(i!=ult){
 			Token er=token_source.tablaTok.get(i+1);
-			mensajes.add("*Error sintactico en token: "+ er +" en linea "+er.beginLine +" columna: "+er.beginColumn);
+			mensajes.add("*Error sintactico en token: "+ er +" en linea: "+er.beginLine +" columna: "+er.beginColumn);
 		}
 	}
 }
@@ -363,6 +364,12 @@ void lectura():
 			}
 		}
 	)*
+	{
+		t=token_source.tablaTok.get(token_source.tablaTok.size()-1);
+		int tip=t.kind;
+		if(tip!=CompiladorConstants.CORCH_CIER && tip!=CompiladorConstants.VARIABLE && tip!=CompiladorConstants.LETRA)
+			mensajes.add("Error sintactico en token " + t.image +" en linea: " + t.beginLine + " columna: " + t.beginColumn);
+	}
 }
 void imprimir():
 {
@@ -370,17 +377,26 @@ void imprimir():
 	//token_source.tablaTok=new ArrayList();
 	mensajes=new ArrayList();
 }
-{
-	(<STRING_LITERAL> | PostfixExpression() | <ABRE>Expression()<CIERRA> )
-	(<OP_SUMA>(<STRING_LITERAL> | PostfixExpression() | <ABRE>Expression()<CIERRA> ))* 
+{ 
+	//(<STRING_LITERAL> | PostfixExpression() | <ABRE>Expression()<CIERRA> )//esto esta muy perro de generar el codigo :c 
+	//(<OP_SUMA>(<STRING_LITERAL> | PostfixExpression() | <ABRE>Expression()<CIERRA> ))*  //hay que hacer "aritmetica de tipos de datos", tal vez para la otra version
+	(<STRING_LITERAL> | PostfixExpression() )
+	(<OP_SUMA>(<STRING_LITERAL> | PostfixExpression() ))*
 }
-
+void codigo():
+{
+	token_source.tablaTok.clear();
+	mensajes=new ArrayList();
+}
+{
+	(VariableDeclarator() | Expression() <FIN>)*
+}
 void VariableDeclarator() :
 {
 	Token tipo;
 }
 {
-	(tipo=tipoDeDato() VariableDeclaratorId(tipo) <FIN>)*
+	tipo=tipoDeDato() VariableDeclaratorId(tipo) <FIN> //ANTES TENIA * PERO NO HACE FALTA, el + haria que fuera una gramatica ambigua
 }
 void VariableDeclaratorId(Token tipo) :
 {
@@ -521,9 +537,9 @@ Token PrimaryPrefix() :
 	Token t,aux;
 }
 {
-	constantes()
+	constantes(){return null;}
 	|
-	"(" Expression() ")"
+	"(" Expression() ")" {return null;}
 
 	|
 	t=identificador(){

@@ -12,8 +12,20 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.geom.GeneralPath;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.TreeMap;
 import modelos.compilador.Compilador;
+import modelos.compilador.CompiladorConstants;
+import modelos.compilador.ParseException;
+import modelos.compilador.Token;
 
 /**
  *
@@ -62,6 +74,7 @@ public class Imprimir implements Componente{
     private String codigoInterior;
     
     private GeneralPath fig;
+    ArrayList<String> mensajes;
     private Compilador compilador;
     public Imprimir(int x, int y){
         this.x=x;
@@ -123,6 +136,15 @@ public class Imprimir implements Componente{
             g.drawString(aux, x, y+15+linea*metrics.getHeight());
             linea++;
         }
+        int alt=metrics.getHeight()+2;
+        if(mensajes!=null && mensajes.size()>0 && selected){
+            for (int i = 0; i < mensajes.size(); i++) {
+                g.setColor(Color.YELLOW);
+                g.fillRect(x+50, y+alt*i+2, metrics.stringWidth(mensajes.get(i)), alt);
+                g.setColor(Color.BLACK);
+                g.drawString(mensajes.get(i), x+50, y+alt+alt*i);
+            }
+        }
     }
     public String recortarCadena(FontMetrics fm, String codigo){
         int i=10;
@@ -143,7 +165,84 @@ public class Imprimir implements Componente{
     }
     @Override
     public String generarCodigo() {
-        return codigoInterior;
+        StringBuilder codigo= new StringBuilder();
+        if(codigoInterior!=null){
+            FileWriter save;
+            try {
+                save = new FileWriter("codigo.temp");
+                save.write(codigoInterior);
+                save.close();
+                compilador.ReInit(new InputStreamReader(new FileInputStream("codigo.temp")));
+            } catch (IOException ex) {
+                System.out.println("Error al abrir archivo " + ex);
+                return "";
+            }
+        }else return "";
+        try {
+            compilador.imprimir();
+        } catch (ParseException ex) {
+            System.out.println("Error de sintaxis " + ex);
+            compilador.mensajes.add("Error de sintaxis " + ex);
+            mensajes= compilador.mensajes;
+            selected=true;
+            return "";
+        }
+        ArrayList<Token> tokens= compilador.token_source.tablaTok;
+        TreeMap<Token, Token> var=compilador.token_source.variables;
+        Set llaves=var.keySet();
+        mensajes= compilador.mensajes;
+        codigo.append("printf(\"");
+        //ArrayList<Token> variablesAImp= new ArrayList<>(); hay que usar esto para que las variables que no pueda leer las ignore
+        for (int i = 0; i < tokens.size(); i++) { //"variable i=" + i +" variable j=" +j
+            Token act=tokens.get(i);
+            if(act.kind==CompiladorConstants.OP_SUMA)continue;
+            if(act.kind==CompiladorConstants.STRING_LITERAL){
+                codigo.append(act.image.substring(1, act.image.length()-1));//para quitarle las comillas al principio y al final
+                continue;
+            }
+            Iterator it=llaves.iterator();
+            while(it.hasNext()){
+                Token t=(Token)it.next();
+                if(t.compareTo(tokens.get(i))!=0)continue; //buscara el token 
+                if(!(i==0 || (i>0 &&tokens.get(i-1).image.equals("+"))))continue;
+                int dim=t.dimenciones-tokens.get(i).dimenciones;
+                System.out.println("Variable " +t.image + " arreglo: " + (dim));
+                if(dim==0){
+                    switch(var.get(tokens.get(i)).kind){
+                        case CompiladorConstants.NUMERO:
+                        case CompiladorConstants.entero: codigo.append("%d"); break;
+                        case CompiladorConstants.flotante: codigo.append("%f"); break;
+                        case CompiladorConstants.NUM_DEC:
+                        case CompiladorConstants.doble: codigo.append("%lf"); break;
+                        case CompiladorConstants.largo: codigo.append("lld"); break;
+                        case CompiladorConstants.CARACTER_LITERAL:
+                        case CompiladorConstants.caracter: codigo.append("%c"); break;
+                    }
+                } else if(dim==1 && var.get(tokens.get(i)).kind==CompiladorConstants.caracter){
+                    codigo.append("%s");
+                }else {
+                    String tok=t.image;
+                    for (int j = 0; j < dim; j++) {
+                        tok+="[]";
+                    }
+                    mensajes.add("El token " + tok + " no puede ser impreso.");
+                }
+            }
+            
+        }
+        if(mensajes!=null && mensajes.size()>0)selected=true;
+        codigo.append("\"");
+        for (int i = 0; i < tokens.size(); i++) {
+            Token to=tokens.get(i);
+            if(to.kind==CompiladorConstants.OP_SUMA || to.kind==CompiladorConstants.STRING_LITERAL)continue;
+            if(to.kind==CompiladorConstants.VARIABLE || to.kind == CompiladorConstants.LETRA && 
+                    (i==0 || (i>0 &&tokens.get(i-1).image.equals("+"))))
+                codigo.append(",");
+            
+            codigo.append(to.image);
+        }
+        codigo.append(");");
+        return codigo.toString();
     }
 
     @Override
@@ -297,6 +396,7 @@ public class Imprimir implements Componente{
     /**
      * @param compilador the compilador to set
      */
+    @Override
     public void setCompilador(Compilador compilador) {
         this.compilador = compilador;
     }

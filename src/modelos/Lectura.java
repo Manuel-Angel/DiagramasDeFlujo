@@ -198,6 +198,9 @@ public class Lectura implements Componente{
             compilador.lectura();
         } catch (ParseException ex) {
             System.out.println("Error de sintaxis " + ex);
+            compilador.mensajes.add("Error de sintaxis " + ex);
+            mensajes= compilador.mensajes;
+            selected=true;
             return "";
         }
         ArrayList<Token> tokens= compilador.token_source.tablaTok;
@@ -219,8 +222,8 @@ public class Lectura implements Componente{
                         variables++;
                         switch(var.get(tokens.get(i)).kind){
                             case CompiladorConstants.entero: codigo.append("%d"); break;
-                            case CompiladorConstants.flotante:
-                            case CompiladorConstants.doble: codigo.append("%f"); break;
+                            case CompiladorConstants.flotante: codigo.append("%f"); break;
+                            case CompiladorConstants.doble: codigo.append("%lf"); break;
                             case CompiladorConstants.largo: codigo.append("lld"); break;
                             case CompiladorConstants.caracter: codigo.append("%c"); break;
                             default: variables--;
@@ -242,7 +245,6 @@ public class Lectura implements Componente{
         codigo.append("\",");
         for (int i = 0; i < tokens.size(); i++) {
             Token to=tokens.get(i);
-            System.out.println(to);
             if(to.kind==CompiladorConstants.VARIABLE || to.kind == CompiladorConstants.LETRA && 
                     (i==0 || (i>0 &&tokens.get(i-1).image.equals(",")))){
                 codigo.append("&").append(tokens.get(i));

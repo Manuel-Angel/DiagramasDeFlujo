@@ -1,1 +1,1 @@
-x,y, resp
+"x: " + x + " y:" +y + " z: "+z +" respuesta: " + resp[a-3]

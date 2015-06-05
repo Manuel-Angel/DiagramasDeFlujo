@@ -61,7 +61,7 @@ public abstract class ComponenteContenedor implements Componente {
     protected Componente anterior;
     
     protected String codigoInterior;
-    private Compilador compilador;
+    protected Compilador compilador;
     public ComponenteContenedor(int x, int y){
         this.x=x;
         this.y=y;

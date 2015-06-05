@@ -90,6 +90,7 @@ public class Hacermientras extends ComponenteContenedor{
         Componente aux= componentesInternos[0];
         String linea;
         while(aux!=null){
+            aux.setCompilador(compilador);
             linea=aux.generarCodigo();
             if(linea != null && linea.length()>0){
                 linea=tabular(linea);
