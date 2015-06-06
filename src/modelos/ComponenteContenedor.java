@@ -6,8 +6,10 @@
 package modelos;
 
 import java.awt.Color;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.Scanner;
 import modelos.compilador.Compilador;
 
@@ -62,6 +64,7 @@ public abstract class ComponenteContenedor implements Componente {
     
     protected String codigoInterior;
     protected Compilador compilador;
+    ArrayList<String> mensajes;
     public ComponenteContenedor(int x, int y){
         this.x=x;
         this.y=y;
@@ -413,5 +416,16 @@ public abstract class ComponenteContenedor implements Componente {
     */
     public void setCompilador(Compilador compilador) {
         this.compilador = compilador;
+    }
+    public void imprimirErrores(FontMetrics metrics, Graphics g){
+        int alt=metrics.getHeight()+2;
+        if(mensajes!=null && mensajes.size()>0 && selected){
+            for (int i = 0; i < mensajes.size(); i++) {
+                g.setColor(Color.YELLOW);
+                g.fillRect(x+50, y+alt*i+2, metrics.stringWidth(mensajes.get(i)), alt);
+                g.setColor(Color.BLACK);
+                g.drawString(mensajes.get(i), x+50, y+alt+alt*i);
+            }
+        }
     }
 }

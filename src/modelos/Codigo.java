@@ -11,8 +11,16 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Scanner;
 import modelos.compilador.Compilador;
+import modelos.compilador.CompiladorConstants;
+import modelos.compilador.ParseException;
+import modelos.compilador.Token;
 import vista.FormularioCodigo;
 
 /**
@@ -62,6 +70,7 @@ public class Codigo implements Componente {
     private Componente anterior;
     
     private String codigoInterior;
+    ArrayList<String> mensajes;
     public Codigo(int x, int y){
         this.x=x;
         this.y=y;
@@ -103,6 +112,15 @@ public class Codigo implements Componente {
             g.drawString(aux, x, y+15+linea*metrics.getHeight());
             linea++;
         }
+        int alt=metrics.getHeight()+2;
+        if(mensajes!=null && mensajes.size()>0 && selected){
+            for (int i = 0; i < mensajes.size(); i++) {
+                g.setColor(Color.YELLOW);
+                g.fillRect(x+50, y+alt*i+2, metrics.stringWidth(mensajes.get(i)), alt);
+                g.setColor(Color.BLACK);
+                g.drawString(mensajes.get(i), x+50, y+alt+alt*i);
+            }
+        }
     }
     public String recortarCadena(FontMetrics fm, String codigo){
         int i=10;
@@ -132,9 +150,43 @@ public class Codigo implements Componente {
 
     @Override
     public String generarCodigo() {
-        // aqui se va a hacer todo el parseo y ese pedo del JAVACC y asi
-        //por mientras supondre que el usuario ya metio el codigo en lenguaje C
-        return codigoInterior;
+        StringBuilder codigo= new StringBuilder();
+        if(codigoInterior!=null){
+            FileWriter save;
+            try {
+                save = new FileWriter("codigo.temp");
+                save.write(codigoInterior);
+                save.close();
+                compilador.ReInit(new InputStreamReader(new FileInputStream("codigo.temp")));
+            } catch (IOException ex) {
+                System.out.println("Error al abrir archivo " + ex);
+                return "";
+            }
+        }else return "";
+        try{
+            compilador.codigo();
+        }catch(ParseException ex){
+            System.out.println("Error de sintaxis " + ex);
+            compilador.mensajes.add("Error de sintaxis " + ex);
+            mensajes= compilador.mensajes;
+            selected=true;
+            return "";
+        }
+        ArrayList<Token> tokens= compilador.token_source.tablaTok;
+        //TreeMap<Token, Token> var=compilador.token_source.variables;//se necesitaria esto para hacer la aritmetica de tipos de datos y hacerles los cast automaticos necesarios, pero no tengo tiempo para eso
+        mensajes= compilador.mensajes;
+        if(mensajes!=null && mensajes.size()>0)selected=true;
+        for (int i = 0; i < tokens.size(); i++) {
+            switch(tokens.get(i).kind){
+                case CompiladorConstants.caracter: codigo.append("char "); break;
+                case CompiladorConstants.doble: codigo.append("double "); break;
+                case CompiladorConstants.entero: codigo.append("int "); break;
+                case CompiladorConstants.flotante: codigo.append("float "); break;
+                case CompiladorConstants.largo: codigo.append("long long int "); break;
+                default:  codigo.append(tokens.get(i).image).append(' ');
+            }
+        }
+        return codigo.toString();
     }
 
     @Override

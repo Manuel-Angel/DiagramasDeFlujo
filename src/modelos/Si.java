@@ -108,6 +108,7 @@ public class Si extends ComponenteContenedor{
             tab-=10;
             linea++;
         }
+        imprimirErrores(metrics, g);
     }
     public String recortarCadena(FontMetrics fm, String codigo, int tab){
         int i=10;
@@ -133,6 +134,7 @@ public class Si extends ComponenteContenedor{
         Componente aux= componentesInternos[0];
         String linea;
         while(aux!=null){
+            aux.setCompilador(compilador);
             linea=aux.generarCodigo();
             if(linea != null && linea.length()>0){
                 linea=tabular(linea);
@@ -248,10 +250,5 @@ public class Si extends ComponenteContenedor{
             comp=comp.getSiguiente();
         }
         return Math.max(altoT, aux);
-    }
-
-    /*@Override
-    public void mouseClick(MouseEvent evento) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }*/
+    }    
 }

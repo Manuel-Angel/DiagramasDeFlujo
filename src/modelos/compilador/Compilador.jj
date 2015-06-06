@@ -389,7 +389,16 @@ void codigo():
 	mensajes=new ArrayList();
 }
 {
-	(VariableDeclarator() | Expression() <FIN>)*
+	((VariableDeclarator() | (Expression() <FIN>))*)
+	{
+	int ult=token_source.tablaTok.size()-1,i;
+		for(i=ult;i>=0 && !token_source.tablaTok.get(i).image.equals(";");i--);
+
+		if(i!=ult){
+			Token er=token_source.tablaTok.get(i+1);
+			mensajes.add("*Error sintactico en token: "+ er +" en linea: "+er.beginLine +" columna: "+er.beginColumn);
+		}
+	}
 }
 void VariableDeclarator() :
 {
