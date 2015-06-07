@@ -177,6 +177,12 @@ TOKEN:
 		| < TILDE: "~" >{
 			tablaTok.add(matchedToken);
 		}
+		| <MENOR_IG: "<=">{
+			tablaTok.add(matchedToken);
+		}
+		| <MAYOR_IG: ">=">{
+			tablaTok.add(matchedToken);
+		}
 		|<CARACTER_LITERAL: 
 		"'"
       (   (~["'","\\","\n","\r"])
@@ -400,6 +406,14 @@ void codigo():
 		}
 	}
 }
+void condiciones():
+{
+	token_source.tablaTok.clear();
+	mensajes=new ArrayList();
+}
+{
+	ConditionalOrExpression()
+}
 void VariableDeclarator() :
 {
 	Token tipo;
@@ -466,7 +480,7 @@ void ConditionalAndExpression() :
 void InclusiveOrExpression() :
 {}
 {
-  ExclusiveOrExpression() //( <XOR> ExclusiveOrExpression() )*
+  ExclusiveOrExpression() //( <"|" ExclusiveOrExpression() )*
 }
 void ExclusiveOrExpression() :
 {}
@@ -476,7 +490,7 @@ void ExclusiveOrExpression() :
 void AndExpression() :
 {}
 {
-	//EqualityExpression() ( <Y>"&" EqualityExpression() )*
+	//EqualityExpression() ( "&" EqualityExpression() )*
 	  EqualityExpression()
 }
 void EqualityExpression() :
@@ -487,7 +501,7 @@ void EqualityExpression() :
 void RelationalExpression() :
 {}
 {
-  ShiftExpression() ( ( <MENOR> | <MAYOR> | <MENOR><IGUAL> | <MAYOR><IGUAL> ) ShiftExpression() )*
+  ShiftExpression() ( ( <MENOR> | <MAYOR> | <MENOR_IG> | <MAYOR_IG> ) ShiftExpression() )*
 }
 
 void ShiftExpression() :

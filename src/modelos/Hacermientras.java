@@ -10,8 +10,13 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Scanner;
 import modelos.compilador.Compilador;
+import modelos.compilador.ParseException;
 /**
  *
  * @author Angel
@@ -132,8 +137,7 @@ public class Hacermientras extends ComponenteContenedor{
             }
             aux=aux.getSiguiente();
         }
-        
-        codigo.append("}while(").append((codigoInterior!=null)?codigoInterior.trim():"1").append(");\n");
+        codigo.append("}while(").append(generarCodigoCondicion()).append(");\n");
         return codigo.toString();
     }
 

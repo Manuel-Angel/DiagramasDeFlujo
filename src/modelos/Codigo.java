@@ -183,7 +183,13 @@ public class Codigo implements Componente {
                 case CompiladorConstants.entero: codigo.append("int "); break;
                 case CompiladorConstants.flotante: codigo.append("float "); break;
                 case CompiladorConstants.largo: codigo.append("long long int "); break;
-                default:  codigo.append(tokens.get(i).image).append(' ');
+                case CompiladorConstants.FIN: codigo.append(";\n"); break;
+                default:  
+                    Token t=tokens.get(i);
+                    codigo.append(t.image);
+                    if(i>0 &&  (i+1)< tokens.size() && tokens.get(i+1).kind != CompiladorConstants.IGUAL
+                            && t.kind!=tokens.get(i+1).kind)
+                        codigo.append(' ');
             }
         }
         return codigo.toString();

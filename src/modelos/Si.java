@@ -130,7 +130,7 @@ public class Si extends ComponenteContenedor{
     @Override
     public String generarCodigo() {
         StringBuilder codigo= new StringBuilder();
-        codigo.append("if(").append((codigoInterior!=null)?codigoInterior.trim():"1").append("){\n");
+        codigo.append("if(").append(generarCodigoCondicion()).append("){\n");
         Componente aux= componentesInternos[0];
         String linea;
         while(aux!=null){

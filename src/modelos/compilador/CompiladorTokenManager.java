@@ -33,7 +33,7 @@ private final int jjStopStringLiteralDfa_0(int pos, long active0){
       case 1:
          if ((active0 & 0x3e0L) != 0L)
          {
-            jjmatchedKind = 36;
+            jjmatchedKind = 38;
             jjmatchedPos = 1;
             return 26;
          }
@@ -41,7 +41,7 @@ private final int jjStopStringLiteralDfa_0(int pos, long active0){
       case 2:
          if ((active0 & 0x3e0L) != 0L)
          {
-            jjmatchedKind = 36;
+            jjmatchedKind = 38;
             jjmatchedPos = 2;
             return 26;
          }
@@ -49,7 +49,7 @@ private final int jjStopStringLiteralDfa_0(int pos, long active0){
       case 3:
          if ((active0 & 0x3e0L) != 0L)
          {
-            jjmatchedKind = 36;
+            jjmatchedKind = 38;
             jjmatchedPos = 3;
             return 26;
          }
@@ -59,7 +59,7 @@ private final int jjStopStringLiteralDfa_0(int pos, long active0){
             return 26;
          if ((active0 & 0x160L) != 0L)
          {
-            jjmatchedKind = 36;
+            jjmatchedKind = 38;
             jjmatchedPos = 4;
             return 26;
          }
@@ -69,7 +69,7 @@ private final int jjStopStringLiteralDfa_0(int pos, long active0){
             return 26;
          if ((active0 & 0x140L) != 0L)
          {
-            jjmatchedKind = 36;
+            jjmatchedKind = 38;
             jjmatchedPos = 5;
             return 26;
          }
@@ -77,7 +77,7 @@ private final int jjStopStringLiteralDfa_0(int pos, long active0){
       case 6:
          if ((active0 & 0x140L) != 0L)
          {
-            jjmatchedKind = 36;
+            jjmatchedKind = 38;
             jjmatchedPos = 6;
             return 26;
          }
@@ -123,11 +123,13 @@ private int jjMoveStringLiteralDfa0_0(){
       case 59:
          return jjStopAtPos(0, 18);
       case 60:
-         return jjStopAtPos(0, 19);
+         jjmatchedKind = 19;
+         return jjMoveStringLiteralDfa1_0(0x800000000L);
       case 61:
          return jjStopAtPos(0, 15);
       case 62:
-         return jjStopAtPos(0, 20);
+         jjmatchedKind = 20;
+         return jjMoveStringLiteralDfa1_0(0x1000000000L);
       case 91:
          return jjStopAtPos(0, 25);
       case 93:
@@ -164,6 +166,12 @@ private int jjMoveStringLiteralDfa1_0(long active0){
    }
    switch(curChar)
    {
+      case 61:
+         if ((active0 & 0x800000000L) != 0L)
+            return jjStopAtPos(1, 35);
+         else if ((active0 & 0x1000000000L) != 0L)
+            return jjStopAtPos(1, 36);
+         break;
       case 97:
          return jjMoveStringLiteralDfa2_0(active0, 0x300L);
       case 108:
@@ -365,16 +373,16 @@ private int jjMoveNfa_0(int startState, int curPos)
                      { jjCheckNAddStates(3, 5); }
                   else if (curChar == 34)
                   {
-                     if (kind > 37)
-                        kind = 37;
+                     if (kind > 39)
+                        kind = 39;
                   }
                   break;
                case 26:
                case 24:
                   if ((0x3ff000000000000L & l) == 0L)
                      break;
-                  if (kind > 36)
-                     kind = 36;
+                  if (kind > 38)
+                     kind = 38;
                   { jjCheckNAddTwoStates(24, 25); }
                   break;
                case 1:
@@ -382,8 +390,8 @@ private int jjMoveNfa_0(int startState, int curPos)
                      { jjCheckNAdd(2); }
                   break;
                case 2:
-                  if (curChar == 39 && kind > 35)
-                     kind = 35;
+                  if (curChar == 39 && kind > 37)
+                     kind = 37;
                   break;
                case 4:
                   if ((0x8400000000L & l) != 0L)
@@ -418,8 +426,8 @@ private int jjMoveNfa_0(int startState, int curPos)
                      { jjCheckNAddStates(3, 5); }
                   break;
                case 13:
-                  if (curChar == 34 && kind > 37)
-                     kind = 37;
+                  if (curChar == 34 && kind > 39)
+                     kind = 39;
                   break;
                case 14:
                   if ((0xff000000000000L & l) != 0L)
@@ -497,8 +505,8 @@ private int jjMoveNfa_0(int startState, int curPos)
                case 25:
                   if ((0x7fffffe87fffffeL & l) == 0L)
                      break;
-                  if (kind > 36)
-                     kind = 36;
+                  if (kind > 38)
+                     kind = 38;
                   { jjCheckNAddTwoStates(24, 25); }
                   break;
                case 1:
@@ -574,7 +582,7 @@ public static final String[] jjstrLiteralImages = {
 "\146\154\157\164\141\156\164\145", "\144\157\142\154\145", "\143\141\162\141\143\164\145\162", 
 "\154\141\162\147\157", "\53", "\55", null, null, "\45", "\75", "\52", "\57", "\73", "\74", "\76", 
 "\50", "\51", "\54", "\42", "\133", "\135", "\173", "\175", null, "\46", "\174", 
-"\41", "\136", "\176", null, null, null, };
+"\41", "\136", "\176", "\74\75", "\76\75", null, null, null, };
 protected Token jjFillToken()
 {
    final Token t;
@@ -848,15 +856,25 @@ void TokenLexicalActions(Token matchedToken)
                         tablaTok.add(matchedToken);
          break;
       case 35 :
-        image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
+        image.append(jjstrLiteralImages[35]);
+        lengthOfMatch = jjstrLiteralImages[35].length();
                         tablaTok.add(matchedToken);
          break;
       case 36 :
+        image.append(jjstrLiteralImages[36]);
+        lengthOfMatch = jjstrLiteralImages[36].length();
+                        tablaTok.add(matchedToken);
+         break;
+      case 37 :
+        image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
+                        tablaTok.add(matchedToken);
+         break;
+      case 38 :
         image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
                         //System.out.println("Token: VARIABLE " + image);
                         tablaTok.add(matchedToken);
          break;
-      case 37 :
+      case 39 :
         image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
                         tablaTok.add(matchedToken);
          break;
@@ -944,7 +962,7 @@ public static final String[] lexStateNames = {
    "DEFAULT",
 };
 static final long[] jjtoToken = {
-   0x3fffffffe1L, 
+   0xffffffffe1L, 
 };
 static final long[] jjtoSkip = {
    0x1eL, 

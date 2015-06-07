@@ -71,11 +71,15 @@ public interface CompiladorConstants {
   /** RegularExpression Id. */
   int TILDE = 34;
   /** RegularExpression Id. */
-  int CARACTER_LITERAL = 35;
+  int MENOR_IG = 35;
   /** RegularExpression Id. */
-  int VARIABLE = 36;
+  int MAYOR_IG = 36;
   /** RegularExpression Id. */
-  int STRING_LITERAL = 37;
+  int CARACTER_LITERAL = 37;
+  /** RegularExpression Id. */
+  int VARIABLE = 38;
+  /** RegularExpression Id. */
+  int STRING_LITERAL = 39;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -117,6 +121,8 @@ public interface CompiladorConstants {
     "\"!\"",
     "\"^\"",
     "\"~\"",
+    "\"<=\"",
+    "\">=\"",
     "<CARACTER_LITERAL>",
     "<VARIABLE>",
     "<STRING_LITERAL>",

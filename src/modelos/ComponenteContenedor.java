@@ -9,9 +9,16 @@ import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 import modelos.compilador.Compilador;
+import modelos.compilador.CompiladorConstants;
+import modelos.compilador.ParseException;
+import modelos.compilador.Token;
 
 /**
  *
@@ -427,5 +434,45 @@ public abstract class ComponenteContenedor implements Componente {
                 g.drawString(mensajes.get(i), x+50, y+alt+alt*i);
             }
         }
+    }
+    public String generarCodigoCondicion(){
+        StringBuilder codigo= new StringBuilder();
+        if(codigoInterior!=null){
+            FileWriter save;
+            try {
+                save = new FileWriter("codigo.temp");
+                save.write(codigoInterior);
+                save.close();
+                compilador.ReInit(new InputStreamReader(new FileInputStream("codigo.temp")));
+            } catch (IOException ex) {
+                System.out.println("Error al abrir archivo " + ex);
+                return "1";
+            }
+        }else {
+            codigo.append("1");
+            return codigo.toString();
+        }
+        try{
+            compilador.condiciones();
+        }catch(ParseException ex){
+            System.out.println("Error de sintaxis " + ex);
+            compilador.mensajes.add("Error de sintaxis " + ex);
+            mensajes= compilador.mensajes;
+            selected=true;
+            return "1";
+        }
+        ArrayList<Token> tokens= compilador.token_source.tablaTok;
+        mensajes= compilador.mensajes;
+        if(mensajes!=null && mensajes.size()>0)selected=true;
+        System.out.println("Tokens condicion: ");
+        for (int i = 0; i < tokens.size(); i++) {
+            System.out.print(tokens.get(i).image+" ");
+            switch(tokens.get(i).kind){
+                case CompiladorConstants.O: codigo.append(" || "); break;
+                case CompiladorConstants.Y: codigo.append(" && ");break;
+                default: codigo.append(tokens.get(i).image);
+            }
+        }
+        return codigo.toString();
     }
 }
