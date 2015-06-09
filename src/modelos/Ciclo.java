@@ -6,16 +6,32 @@
 package modelos;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Scanner;
 import modelos.compilador.Compilador;
-import vista.FormularioCodigo;
+import modelos.compilador.CompiladorConstants;
+import modelos.compilador.ParseException;
+import modelos.compilador.Token;
+//import vista.FormularioCodigo;
+
 /**
  *
- * @author Angel
+ * @author Agel
  */
+
 public class Ciclo extends ComponenteContenedor {
+    private Compilador compilador;
+    Conector abajo;
+    Conector arriba;
     int a=0;
     /**
      * Color normal del rectangulo.
@@ -46,40 +62,90 @@ public class Ciclo extends ComponenteContenedor {
      * Contiene la direccion del siguiente componente, es decir, el que esta 
      * conectado abajo de el y que se ejecutaria despues de este componente.
     */
-    private Compilador compilador;
-    public Ciclo(int x, int y) {
-        super(x, y);
-        this.x=x;
-        this.y=y;
+    private Componente siguiente;
+    /**
+     * La direccion del componente anterior, es decir, el que esta conectado 
+     * arriba de el y se ejecuto antes que este componente.
+     */
+    private Componente anterior;
+    
+    private String cicloInterior;
+    ArrayList<String> mensajes;
+    public Ciclo(int x, int y){
+        super (x, y);
+//        this.x=x;
+//        this.y=y;
         color= Color.GREEN;
         colorSeleccion=Color.BLUE;  
-        alto=100;
-        ancho=(int)(1.818*alto);
+        alto=120;
+        ancho=(int)(1.618*alto);
         arriba= new Conector(ancho/2, -30, 5, Color.BLACK);
         abajo= new Conector(ancho/2, alto+30,5, Color.BLACK);
-        conectoresInternos= new Conector[2];
-        conectoresInternos[0]= new Conector(ancho/2, alto+30, 5, Color.BLACK);//El conector de si
-        conectoresInternos[1]= new Conector( ancho+30,alto/2, 5, Color.BLACK); //El conector de no, tambien sera variable
-        componentesInternos= new Componente[2];
-       
+        Conector conector;
+        componentesInternos = new Componente[1];
     }
-    
     @Override
     public void dibujar(Graphics g) {
         if(selected)
             g.setColor(colorSeleccion);
         else g.setColor(color);
         
+        
         g.fillRect(x, y, ancho, alto);
         g.setColor(Color.BLACK);
-        g.drawString((codigoInterior==null)?"": codigoInterior, x, y);
         g.drawLine(x+arriba.x, y+arriba.y, x+ancho/2, y);
         g.drawLine(x+abajo.x, y+ abajo.y, x+ancho/2, y+alto);
+        Conector[] conectoresInternos = new Conector[1];
+        componentesInternos = new Componente[1];
+        
+        conectoresInternos[0]= new Conector(ancho/2, -30, 5, Color.BLACK);
         arriba.dibujar(g, this);
         abajo.dibujar(g, this);
-        
-         g.drawLine(ancho, alto, x+conectoresInternos[0].x, y + conectoresInternos[0].y); //linea
-         conectoresInternos[0].dibujar(g, this); //conector si
+        g.setColor(Color.WHITE);
+        imprimirCodigo(g);
+    }
+    public void imprimirCodigo(Graphics g){
+        if(codigoInterior==null)return;
+        Font font = new Font("Courier new", Font.PLAIN, 12);
+        g.setFont(font);
+        FontMetrics metrics = g.getFontMetrics(font);
+        Scanner s= new Scanner(codigoInterior);
+        int linea=0;
+        while(s.hasNext() && (linea*metrics.getHeight()+15<alto)){
+            String aux=s.nextLine();
+            int messageWidth = metrics.stringWidth(aux);
+            if(messageWidth>ancho){
+                aux=recortarCadena(metrics, aux);
+            }
+            g.drawString(aux, x, y+15+linea*metrics.getHeight());
+            linea++;
+        }
+        int alt=metrics.getHeight()+2;
+        if(mensajes!=null && mensajes.size()>0 && selected){
+            for (int i = 0; i < mensajes.size(); i++) {
+                g.setColor(Color.YELLOW);
+                g.fillRect(x+50, y+alt*i+2, metrics.stringWidth(mensajes.get(i)), alt);
+                g.setColor(Color.BLACK);
+                g.drawString(mensajes.get(i), x+50, y+alt+alt*i);
+            }
+        }
+    }
+    public String recortarCadena(FontMetrics fm, String codigo){
+        int i=10;
+        StringBuilder aux;
+        //System.out.println("Recorta");
+        if(fm.stringWidth(codigo)>ancho){
+            aux=new StringBuilder(codigo.substring(0, 10));
+            while(fm.stringWidth(aux.toString())<(ancho-5) && i<codigo.length()){
+                aux.append(codigo.charAt(i));
+                i++;
+            }
+            if(i<codigo.length()){
+                aux.append("...");
+            }
+            return aux.toString();
+        }
+        return codigo;
     }
     /*
     @Override
@@ -92,9 +158,23 @@ public class Ciclo extends ComponenteContenedor {
 
     @Override
     public String generarCodigo() {
-        // aqui se va a hacer todo el parseo y ese pedo del JAVACC y asi
-        //por mientras supondre que el usuario ya metio el codigo en lenguaje C
-        return codigoInterior;
+        StringBuilder codigo= new StringBuilder();
+        codigo.append("for{     }\n");
+        Componente aux= componentesInternos[0];
+        String linea;
+        while(aux!=null){
+            aux.setCompilador(compilador);
+            linea=aux.generarCodigo();
+            if(linea != null && linea.length()>0){
+                linea=tabular(linea);
+                codigo.append(linea);
+            }
+            aux=aux.getSiguiente();
+        }
+      
+        return codigo.toString();
+        
+        
     }
 
     @Override
@@ -257,16 +337,15 @@ public class Ciclo extends ComponenteContenedor {
         a|=ancho/2;
         return a;
     }
-
-    @Override
-    public void actualizaConectores() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     /**
      * @param compilador the compilador to set
      */
     public void setCompilador(Compilador compilador) {
         this.compilador = compilador;
+    }
+
+    @Override
+    public void actualizaConectores() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
