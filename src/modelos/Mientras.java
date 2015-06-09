@@ -96,7 +96,33 @@ public class Mientras extends ComponenteContenedor{
     @Override
     public String generarCodigo() {
         StringBuilder codigo= new StringBuilder();
-       
+       codigo.append("while(").append(generarCodigoCondicion()).append("){\n");
+        Componente aux= componentesInternos[0];
+        String linea;
+        while(aux!=null){
+            aux.setCompilador(compilador);
+            linea=aux.generarCodigo();
+            if(linea != null && linea.length()>0){
+                linea=tabular(linea);
+                codigo.append(linea);
+            }
+            aux=aux.getSiguiente();
+        }
+        aux= componentesInternos[1];
+        
+        StringBuilder sino=new StringBuilder();
+        while(aux!=null){
+            aux.setCompilador(compilador);
+            linea=aux.generarCodigo();
+            if(linea !=null &&linea.length()>0){
+                linea=tabular(linea);
+                sino.append(linea);
+            }
+            aux=aux.getSiguiente();
+        }
+        
+            codigo.append("} ");
+          
         
         return codigo.toString();
     }
